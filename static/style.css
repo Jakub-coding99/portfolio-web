@@ -16,7 +16,7 @@
     
     
     --text-color-1 : rgb(225, 222, 218);
-    --text-color-2 : black
+    --text-color-2 :  #1e1f22
 }
 
 .bg-1 { background:linear-gradient(to bottom,  var(--bg-color-1), #1e1e1e,  #535355 )}
@@ -267,6 +267,7 @@ span {
     padding: 3rem 2rem;
     
 }
+
 
 
 
@@ -542,11 +543,7 @@ footer,
   }
 
 
-.project-page {
-    margin: 80px auto 50px auto;
-    
-    
-}
+
 
 
 .project-section {

@@ -411,10 +411,13 @@
         <div class="projects">
             {% for project in projects %}
             <div class="project">
-                <img class ="project-img" src="https://www.celoxis.com/cassets/img/pmc/main-areas-project-management.png" alt="">
-                <h3>[Project name]</h3>
+               
                 
-                <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Laud facilii necessitatibus odio earum architecto magni exercitationem.</p>
+                <img class ="project-img" src="../{{project.img_url[0]}}" alt="">
+               
+                <h3>[{{project.title}}]</h3>
+                
+                <p>{{project.preview}}</p>
                 <div class="project-flex">
                     <a class="project-btn" href="{{url_for('get_project', id = project.id)}}">Podrobnosti <i class="fa-solid fa-arrow-right"></i></a>
                 </div>

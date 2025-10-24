@@ -8,6 +8,7 @@ class Projects(SQLModel,table = True):
     title: str
     description: str
     image_url: list[str] | None = Field(default=None, sa_column=Column(JSON))
+    preview: str
 
 class Admin(SQLModel, table = True):
     id: int | None = Field(default=None, primary_key=True)

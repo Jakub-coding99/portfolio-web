@@ -5,11 +5,8 @@ from fastapi.responses import HTMLResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import Annotated
 import secrets
-from database import Projects, Admin,create_db_and_tables,engine
-
+from database import Projects, Admin,create_db_and_tables,engine,Session,select
 import os
-
-from sqlmodel import Session,select
 from typing import List
 
 
@@ -21,7 +18,7 @@ create_db_and_tables()
 
 
 @app.post("/test",response_class = HTMLResponse)
-async def  test(request : Request,title:str = Form(...),popis:str = Form(...),files: List[UploadFile] = Form(...)):
+async def  test(request : Request,title:str = Form(...),description:str = Form(...),files: List[UploadFile] = Form(...),preview:str = Form(...)):
     img_path = []
     
     for file in files:
@@ -34,9 +31,9 @@ async def  test(request : Request,title:str = Form(...),popis:str = Form(...),fi
             f.write(content)
         
         img_path.append(location_file)
-    print(img_path)
     
-    new_project = Projects(title=title,description=popis,image_url=img_path)
+    
+    new_project = Projects(title=title, description=description,image_url=img_path,preview=preview)
     with Session(engine) as session:
         session.add(new_project)
         session.commit()
@@ -45,11 +42,11 @@ async def  test(request : Request,title:str = Form(...),popis:str = Form(...),fi
         # print(project.description)
    
        
-    return templates.TemplateResponse("test.html", {"request":request,"filename": [f.filename for f in files]})
+    return templates.TemplateResponse("save_project.html", {"request":request,"filename": [f.filename for f in files]})
 
 @app.get("/test", response_class=HTMLResponse)
 def get_test(request : Request):
-     return templates.TemplateResponse("test.html", {"request":request})
+     return templates.TemplateResponse("save_project.html", {"request":request})
 
 
 
@@ -60,27 +57,33 @@ def admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
 
 
 
+def all_project():
+    projects = []
+    with Session(engine) as session:
+        project = select(Projects)
+        all_projects = session.scalars(project).all()
+        for p in all_projects:
+            project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,"preview":p.preview}
+            projects.append(project_format)
+    
+    return projects
 
-
-
-
-
-projects = [{"id" : 1,"title":"TicTacToe","description" : "Muj první projekt" },{"id" : 2}, {"id" : 3} ]
 
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
-
 templates = Jinja2Templates(directory="templates")
 
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
+    projects = all_project()
     return templates.TemplateResponse("index.html",{"request":request, "projects" : projects})
 
 
 @app.get("/projects/{id}",response_class=HTMLResponse)
 def get_project(request : Request ,id : int):
-    
-    for p in projects:
+    all_projects = all_project()
+    for p in all_projects:
+        
         if p["id"] == id:
             project = p
            
