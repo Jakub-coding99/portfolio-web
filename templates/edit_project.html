@@ -1,0 +1,17 @@
+<div class="edit-projects">
+    
+    <form action="{{url_for('post_edit_project',id = project.id)}}" method="post" enctype="multipart/form-data">
+        
+        <input type="text" value="{{project.title}}" name="title">
+        <input type="text"  id="" value="{{project.preview}}" name="preview">
+        <textarea name="description" id="" >{{project.description}}</textarea>
+        <input type="file" value="{{project.image}}">
+        <input type="submit">
+
+        
+
+    </form>
+   
+
+
+</div>

@@ -1,0 +1,99 @@
+/* * {
+
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --bg-color-1 : #1e1f22;
+    --bg-color-2 :#e5e7eb;
+    --color-accent:#d8a31a;
+
+    --font-primary: "Inter", sans-serif; 
+    --font-header : "Popins", sans-serif;
+
+    
+    
+    --text-color-1 : rgb(225, 222, 218);
+    --text-color-2 :  #1e1f22
+}
+
+
+h2  {
+    text-align: center;
+    margin-bottom:  20px ;
+}
+
+
+.admin-section {
+    background-color: var(--bg-color-2);
+    color:var(--bg-color-1);
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    background-color: var(--bg-color-2);
+    color: var(--bg-color-1);
+}
+
+
+.admin-projects-input {
+   
+    margin-top: 150px ;
+    display: flex;
+    
+    flex-direction: column;
+    border: 1px solid var(--bg-color-1);
+    width: 40vw;
+}
+
+.form-wrapper {
+    max-width: 80vw;
+    display: flex;
+    flex-direction: column;
+    padding: 40px;
+   
+}
+
+
+.row {
+    margin: 10px 0;
+    
+
+}
+
+.row-2 {
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+     
+    justify-content: space-between; /* nebo stretch, podle potřeby */
+    /* align-items: center;
+    ;
+ 
+    
+    
+}
+
+.label-input {
+  
+  
+   
+    
+}
+
+textarea {
+    width: 100%;
+    justify-content: center;
+    display: flex;
+    margin: 0;
+    
+}  */
