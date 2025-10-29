@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{url_for('static', path = '/admin.css')}}">
+{% endblock %}
+
+{% block title %}{{project.title}}{% endblock %}
+
+
+{% block content %}
+
+{% block header%}<header>{% include "admin/admin_header.html" %}</header>{% endblock %}
+
+
+<div class="admin-panel">
+    <h2>PROJEKTY</h2>
+</div>
+
+
+<div class="admin-section">
+    
+
+<div class="container">
+    <div class="edit-projects">
+        
+        <form action="{{url_for('post_edit_project',id = project.id)}}" method="post" enctype="multipart/form-data">
+            
+            <input type="text" value="{{project.title}}" name="title">
+            <input type="text"  id="" value="{{project.preview}}" name="preview">
+            <textarea name="description" id="" >{{project.description}}</textarea>
+            <input type="file" value="{{project.image}}">
+            <input type="submit">
+
+            
+
+        </form>
+    
+
+
+    </div>
+</div>
+</div>
+
+{% endblock %}

@@ -41,8 +41,13 @@ def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
             )
 
 
-@app.post("/admin-section",response_class = HTMLResponse,)
-async def post_admin_pannel(request : Request,title:str = Form(...),description:str = Form(...),
+@app.get("/admin-add-project",response_class = HTMLResponse)
+def get_add_project(request : Request,admin=Depends(get_admin)):
+    return templates.TemplateResponse("admin/admin_add_project.html",{"request":request})
+
+
+@app.post("/admin-add-project",response_class = HTMLResponse,)
+async def add_project(request : Request,title:str = Form(...),description:str = Form(...),
                 files: List[UploadFile] = File(None),preview:str = Form(...),admin=Depends(get_admin)):
     img_path = []
     projects = all_project()
@@ -72,14 +77,12 @@ async def post_admin_pannel(request : Request,title:str = Form(...),description:
         session.commit()
         return RedirectResponse("/admin-section", status_code=303)
 
-        
-
-    return templates.TemplateResponse("save_project.html", {"request":request,"filename": [f.filename for f in files] if files else [],"projects":projects})
+    return templates.TemplateResponse("admin/admin_add_project.html", {"request":request,"filename": [f.filename for f in files] if files else [],"projects":projects})
 
 @app.get("/admin-section", response_class=HTMLResponse)
 def get_admin_pannel(request : Request,admin=Depends(get_admin)):
     projects = all_project()
-    return templates.TemplateResponse("save_project.html", {"request":request,"projects":projects})
+    return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects})
 
 
 @app.get("/project/{id}",response_class=HTMLResponse)
@@ -98,7 +101,7 @@ def get_edit_project(request:Request,id:int):
     with Session(engine) as session:
         project = session.get(Projects,id)
         
-    return templates.TemplateResponse("edit_project.html",{"request":request,"project":project})
+    return templates.TemplateResponse("admin/edit_project.html",{"request":request,"project":project})
 
 
 @app.post("/edit/project/{id}")
@@ -115,7 +118,7 @@ def post_edit_project(request:Request,id:int,title: str = Form(...),description:
         return RedirectResponse("/admin-section", status_code=303)
         
     
-    return templates.TemplateResponse("edit_project.html",{"request":request,"project":project})
+    return templates.TemplateResponse("admin/edit_project.html",{"request":request,"project":project})
 
 
 def all_project():
@@ -190,6 +193,6 @@ async def send_email(data):
     
     fm = FastMail(conf)
     await fm.send_message(message)
-    print("message sent")
+  
 
 

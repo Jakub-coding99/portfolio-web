@@ -43,11 +43,13 @@
 }
 
 .custom-shape-divider-bottom-1760609905 svg {
-    position: relative;
+   position: relative;
     display: block;
     width: calc(139% + 1.3px);
-    height: 120px;
+    height: 100px;
     transform: rotateY(180deg);
+     
+    
    
    
     
@@ -55,8 +57,8 @@
 
 .custom-shape-divider-bottom-1760609905 .shape-fill {
     fill: var(--bg-color-2);
+  
 }
-
 
 
 html {
@@ -284,7 +286,7 @@ span {
 }
 
 .container-hero {
-    height: 100vh;
+    height: 110vh;
     display: flex;
     flex-direction: column;
     position: relative;
@@ -299,8 +301,9 @@ span {
 
 .hero-section {
     position: relative;
-  
     overflow: hidden;
+    height: 110vh;
+
 }
 
 
@@ -519,7 +522,7 @@ footer,
 
 
 .skill-section  {
-    height: 100vh;
+    height: 110vh;
     position: relative;
     overflow: hidden;
    
@@ -657,7 +660,8 @@ footer,
       position: relative;
       width: 150px;
       height: 150px;
-      aspect-ratio: 1.1547; /* Poměr pro pravidelný šestiúhelník */
+      aspect-ratio: 1.1547; 
+      
   
    
       
@@ -714,12 +718,11 @@ footer,
 
     .skills {
         display: flex;
-       
         flex-direction: column;
-        
         gap: 0;
         margin: 0 ;
         flex-wrap: wrap;
+       
         
     }
     
@@ -1130,6 +1133,10 @@ h1 {
 .container-hero {
     height: 100vh;
     
+}
+
+.hero-section {
+    height: 100vh;
 }
 
 .hexagon-wrapper {

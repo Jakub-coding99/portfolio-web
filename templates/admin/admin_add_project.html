@@ -1,14 +1,28 @@
+  {% extends "base.html" %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{url_for('static', path = '/admin.css')}}">
+{% endblock %}
 
-{% extends "base.html" %}
-{% block title %}Admin Panel{% endblock %}
+{% block title %}Admin Pannel{% endblock %}
+
 
 {% block content %}
 
+{% block header%}<header>{% include "admin/admin_header.html" %}</header>{% endblock %}
+
+
+<div class="admin-panel">
+    <h2>PROJEKTY</h2>
+</div>
+
+
+
 <div class="admin-section">
     <div class="container">
-
-        <form class="admin-projects-input" action="{{ url_for('post_admin_pannel') }}" method="POST" enctype="multipart/form-data">
-            <div class="form-wrapper">
+        
+        <form class="admin-projects-input" action="{{ url_for('add_project') }}" method="POST" enctype="multipart/form-data">
+            <a href="{{url_for('get_admin_pannel')}}">zpět</a>
+            <div class="form-wrapper-admin">
                 <h2>Přidat projekt</h2>
 
             
@@ -74,24 +88,12 @@
         </form>
 
 
-        <div class="admin-projects">
-            {% for project in projects %}
-                <div>{{project.title}}
-                    <a href="{{url_for('delete_project',id = project.id)}}">Smazat</a>
-                    <a href="{{url_for('get_edit_project', id = project.id)}}">Upravit</a>
-
-                </div>
-            {% endfor %}
-        </div>
-
+      
     </div>
 
 
     
 </div>
 
-
-
-   
 
 {% endblock %}

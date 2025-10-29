@@ -2,8 +2,10 @@
 
 {% block content %}
 
+{% block header %}<header>{% include "header.html" %}</header>{% endblock %}
+
 <div class="project-section bg-2 text-2">
-    <div class="container-project bg-2 text-2"">
+    <div class="container-project bg-2 text-2">
         <div class="project-page">
             <h1>{{project.title}}</h1>
         

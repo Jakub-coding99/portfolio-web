@@ -1,4 +1,4 @@
-/* * {
+* {
 
     margin: 0;
     padding: 0;
@@ -20,34 +20,202 @@
 }
 
 
-h2  {
-    text-align: center;
-    margin-bottom:  20px ;
+
+
+
+
+body {
+    display: grid;
+    grid-template-columns: 15% 85%;
+    grid-template-rows: auto;
 }
+
+/* header */
+
+
+header {
+    grid-column: 1;
+    grid-row: 2;
+    padding: 0;
+    left :0;
+    top: 0;
+    height: 100vh;
+    background-color:rgb(50, 50, 50);
+    position: fixed;
+    width: 15vw;
+    z-index: 1;
+    color: white;
+    
+
+
+}
+
+.admin-header {
+    display: flex;
+    justify-content: center;
+    
+
+}
+
+.header-items  {
+    display: flex;
+    flex-direction: column;
+    margin-top: 50px;
+   
+    
+}
+
+
+.header-item {
+    text-decoration: none;
+    margin: 25px 0;
+    color: white;
+}
+
+/* ADMIN PANEL */
+
+.admin-panel {
+    grid-column: 1 / 2;
+    
+    grid-row: 1;
+    background-color: rgb(86, 86, 86);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 100;
+    padding: 15px;
+    
+
+}
+
+.admin-panel h2 {
+    text-align: center;
+}
+
+
+/* MAIN SECTION */
+
+
+
 
 
 .admin-section {
-    background-color: var(--bg-color-2);
-    color:var(--bg-color-1);
+    background-color: rgb(200, 196, 196);
+    
     height: 100vh;
-    display: flex;
-    justify-content: center;
+     grid-column: 2;
+    grid-row: 2;
+   
+  
 }
 
+
+
 .container {
-    max-width: 1400px;
-    margin: 0 auto;
+  
+  
+    margin-top: 100px;
+    display: flex;
+    justify-content: center;
+   
+   
+
+
+}
+
+.projects-button {
     display: flex;
     justify-content: center;
     flex-direction: column;
-    background-color: var(--bg-color-2);
-    color: var(--bg-color-1);
 }
+
+
+.button-add {
+   
+    margin-bottom: 20px;
+   
+}
+
+/* BUTTONS */
+
+.button-add a,
+.edit-btn,
+.delete-btn {
+    text-decoration: none;
+    padding: 10px 12px;
+    display: inline-block;
+    border-radius: 10px;
+    color: white;
+    transition: transform 0.5s ease;
+}
+
+.button-add a {
+    background-color: rgb(0, 118, 22);
+}
+
+.edit-btn {
+    background-color: #d8a31a;
+}
+
+.delete-btn {
+    background-color: red;
+}
+
+
+.button-add a:hover,
+.edit-btn:hover,
+.delete-btn:hover {
+     transform: scale(1.1) rotate(-3deg);
+   
+}
+
+
+
+/* TABLE */
+
+
+table {
+    border-collapse: collapse;
+      border-radius: 10px;
+      background-color: #393838;
+      
+    
+}
+
+table, th, td {
+  border: 2px solid rgb(0, 0, 0);
+
+}
+
+table tr td {
+    padding: 20px;
+   
+}
+
+.row-title {
+    width: 20vw;
+    
+}
+.row-title a {
+    text-decoration: none;
+    color: rgb(185, 185, 185);
+
+}
+
+
+
+tr:nth-child(even) {background-color: #555454;}
+
+
+
+
+
+
 
 
 .admin-projects-input {
    
-    margin-top: 150px ;
+    
     display: flex;
     
     flex-direction: column;
@@ -55,7 +223,7 @@ h2  {
     width: 40vw;
 }
 
-.form-wrapper {
+.form-wrapper-admin {
     max-width: 80vw;
     display: flex;
     flex-direction: column;
@@ -76,7 +244,7 @@ h2  {
     width: 100%;
      
     justify-content: space-between; /* nebo stretch, podle potřeby */
-    /* align-items: center;
+    align-items: center;
     ;
  
     
@@ -96,4 +264,5 @@ textarea {
     display: flex;
     margin: 0;
     
-}  */
+} 
+
