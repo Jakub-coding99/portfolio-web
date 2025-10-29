@@ -9,6 +9,7 @@ class Projects(SQLModel,table = True):
     description: str
     image_url: list[str] | None = Field(default=None, sa_column=Column(JSON))
     preview: str
+    markdown: str
 
 class Admin(SQLModel, table = True):
     id: int | None = Field(default=None, primary_key=True)

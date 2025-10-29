@@ -22,12 +22,12 @@
 <div class="container">
     <div class="edit-projects">
         
-        <form action="{{url_for('post_edit_project',id = project.id)}}" method="post" enctype="multipart/form-data">
+        <form class="project-form" action="{{url_for('post_edit_project',id = project.id)}}" method="post" enctype="multipart/form-data">
             
             <input type="text" value="{{project.title}}" name="title">
             <input type="text"  id="" value="{{project.preview}}" name="preview">
-            <textarea name="description" id="" >{{project.description}}</textarea>
-            <input type="file" value="{{project.image}}">
+            <textarea name="markdown_text" id="" >{{project.markdown}}</textarea>
+            <input class="file-input" type="file" value="{{project.image}}">
             <input type="submit">
 
             
@@ -41,3 +41,5 @@
 </div>
 
 {% endblock %}
+
+{% block  js%}<script src="../../static/admin.js"></script>{% endblock %}

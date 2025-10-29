@@ -11,6 +11,7 @@ from typing import List
 from fastapi.responses import RedirectResponse
 from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from dotenv import load_dotenv,find_dotenv
+import markdown
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
@@ -70,8 +71,13 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
             
             img_path.append(location_file)
     
+    html_text = markdown.markdown(description)
+    markdown_text = description
+
+    print(markdown_text)
+
     
-    new_project = Projects(title=title, description=description,image_url=img_path,preview=preview)
+    new_project = Projects(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
         session.add(new_project)
         session.commit()
@@ -105,15 +111,24 @@ def get_edit_project(request:Request,id:int):
 
 
 @app.post("/edit/project/{id}")
-def post_edit_project(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...)):
+def post_edit_project(request:Request,id:int,title: str = Form(...),markdown_text:str = Form(...),preview:str=Form(...)):
     with Session(engine) as session:
         project = session.get(Projects,id)
         if not project:
             return {"eror":"not found"}
         
-        project.title = title
-        project.description = description
-        project.preview = preview
+        if project.title != title:
+            project.title = title
+        
+        if project.markdown != markdown_text:
+            new_description = markdown.markdown(markdown_text)
+            project.description = new_description
+            project.markdown = markdown_text
+        
+        if project.preview != preview:
+            project.preview = preview
+        
+       
         session.commit()
         return RedirectResponse("/admin-section", status_code=303)
         

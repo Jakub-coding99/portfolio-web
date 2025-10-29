@@ -20,7 +20,7 @@
 <div class="admin-section">
     <div class="container">
         
-        <form class="admin-projects-input" action="{{ url_for('add_project') }}" method="POST" enctype="multipart/form-data">
+        <form class="admin-projects-input project-form" action="{{ url_for('add_project') }}" method="POST" enctype="multipart/form-data">
             <a href="{{url_for('get_admin_pannel')}}">zpět</a>
             <div class="form-wrapper-admin">
                 <h2>Přidat projekt</h2>
@@ -69,7 +69,7 @@
                 <div class="row">
                     <div class="label-input">
                         <label for="">Choose image, first image is preview image</label>
-                        <input type="file" id="" name = "files" multiple>
+                        <input class="file-input" type="file" id="" name = "files" multiple>
 
                     </div>
                     
@@ -97,3 +97,7 @@
 
 
 {% endblock %}
+
+{% block  js%}<script src="../../static/admin.js"></script>{% endblock %}
+
+
