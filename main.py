@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException, status
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import Annotated
 from passlib.context import CryptContext
@@ -13,9 +13,14 @@ from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from dotenv import load_dotenv,find_dotenv
 import markdown
 
+
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
+ADMIN_URL = "/user/admin"
+ADD_PROJECT_URL = "/admin-add_project"
+ADMIN_PAGE_URL = "/admin-page"
+ADMIN_EDIT_PROJECT = "/edit/project/{id}"
 
 
 app = FastAPI()
@@ -24,7 +29,7 @@ security = HTTPBasic()
 
 create_db_and_tables()
 
-@app.get("/user/admin")
+@app.get(ADMIN_URL,response_class = HTMLResponse)
 def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
         with Session(engine) as session:
             hasher = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -32,7 +37,7 @@ def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
             check_pass = hasher.verify(credentials.password,admin.password)
 
             if admin.user_name == credentials.username and check_pass:
-                return RedirectResponse(url="/admin-section")
+                return RedirectResponse(url=ADMIN_PAGE_URL)
             else:
         
                 raise HTTPException(
@@ -42,25 +47,29 @@ def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
             )
 
 
-@app.get("/admin-add-project",response_class = HTMLResponse)
+@app.get(ADD_PROJECT_URL,response_class = HTMLResponse)
 def get_add_project(request : Request,admin=Depends(get_admin)):
-    return templates.TemplateResponse("admin/admin_add_project.html",{"request":request})
+    return templates.TemplateResponse("admin/admin_add_project.html",{"request":request,"api_url" : ADD_PROJECT_URL})
 
 
-@app.post("/admin-add-project",response_class = HTMLResponse,)
-async def add_project(request : Request,title:str = Form(...),description:str = Form(...),
-                files: List[UploadFile] = File(None),preview:str = Form(...),admin=Depends(get_admin)):
+
+@app.post(ADD_PROJECT_URL,response_class = HTMLResponse,)
+async def add_project(request : Request,title:str = Form(...),description:str = Form(...),files: List[UploadFile] = File(None),
+                      preview:str = Form(...),admin=Depends(get_admin)):
     img_path = []
     projects = all_project()
     
+    empty_data = all(len(x) == 0  for x in (title,description,preview))
+    print(files)
+    if empty_data == True and files == None:
+        return JSONResponse({"redirect": ADMIN_PAGE_URL})
+    if files == None:
+        fallback_img = "static/img/no-img.jpg"
+        img_path.append(fallback_img)
+        
     
-    if files:
+    else:
         for file in files:
-            if not file.filename:
-                fallback_img = "static/img/no-img.jpg"
-                img_path.append(fallback_img)
-                continue
-       
             UPLOAD_DIR = "static/img/"
             os.makedirs(UPLOAD_DIR,exist_ok=True)
             location_file = os.path.join(UPLOAD_DIR,file.filename)
@@ -74,18 +83,16 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     html_text = markdown.markdown(description)
     markdown_text = description
 
-    print(markdown_text)
-
-    
     new_project = Projects(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
         session.add(new_project)
         session.commit()
-        return RedirectResponse("/admin-section", status_code=303)
+    
+    return JSONResponse({"redirect": ADMIN_PAGE_URL})
 
-    return templates.TemplateResponse("admin/admin_add_project.html", {"request":request,"filename": [f.filename for f in files] if files else [],"projects":projects})
+   
 
-@app.get("/admin-section", response_class=HTMLResponse)
+@app.get(ADMIN_PAGE_URL, response_class=HTMLResponse)
 def get_admin_pannel(request : Request,admin=Depends(get_admin)):
     projects = all_project()
     return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects})
@@ -97,23 +104,34 @@ def delete_project(request:Request,id : int):
         
         choosen_project = session.get(Projects,id)
         if choosen_project:
+            for img in choosen_project.image_url:
+                if img == "static/img/no-img.jpg":
+                    continue
+                else:
+                    try:
+                        os.remove(img)
+                    except FileNotFoundError:
+                        pass
+
             session.delete(choosen_project)
             session.commit()
-            
-    return RedirectResponse(url="/admin-section",status_code=303)
 
-@app.get("/edit/project/{id}")
+    return RedirectResponse(url=ADMIN_PAGE_URL,status_code=303)
+
+@app.get(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
 def get_edit_project(request:Request,id:int):
     with Session(engine) as session:
         project = session.get(Projects,id)
+        print(project)
         
     return templates.TemplateResponse("admin/edit_project.html",{"request":request,"project":project})
 
 
-@app.post("/edit/project/{id}")
+@app.post(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
 def post_edit_project(request:Request,id:int,title: str = Form(...),markdown_text:str = Form(...),preview:str=Form(...)):
     with Session(engine) as session:
         project = session.get(Projects,id)
+        print(project)
         if not project:
             return {"eror":"not found"}
         
@@ -130,7 +148,7 @@ def post_edit_project(request:Request,id:int,title: str = Form(...),markdown_tex
         
        
         session.commit()
-        return RedirectResponse("/admin-section", status_code=303)
+        return RedirectResponse(url=ADMIN_PAGE_URL, status_code=303)
         
     
     return templates.TemplateResponse("admin/edit_project.html",{"request":request,"project":project})
@@ -167,7 +185,6 @@ def get_project(request : Request ,id : int):
         
         if p["id"] == id:
             project = p
-           
             break
 
     if project is None:

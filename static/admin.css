@@ -268,3 +268,41 @@ textarea {
     
 } 
 
+.prev-imgs {
+    width: 30vw;
+    height: 20vh;
+    display: flex;
+    flex-direction: row;
+}
+
+
+
+.img-preview {
+    width: 100px;
+    height: 100px;
+   
+    margin: 0 5px;
+}
+
+.preview-wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
+.img-descr {
+    font-size: 10px !important;
+    color: red !important;
+    position: relative;
+}
+
+.close-btn-img {
+    background-color: yellow;
+    color: "black";
+    margin: 3px;
+
+
+}
+
+.close-btn-img:hover {
+    background-color: green;
+}
