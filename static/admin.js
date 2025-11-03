@@ -1,10 +1,41 @@
+
+const sendIMG = async(url,formData) => {
+        const response = await fetch(url, {
+        "method":"POST",
+        "body": formData,
+    
+    
+    })
+
+ const data = await response.json(); // <-- tady parsuješ JSON z Pythonu
+if (data.redirect) {
+    window.location.href = data.redirect; // redirect funguje
+}
+
+
+}
+
+
+
 const div = document.querySelector(".prev-imgs")
+console.log(div)
 
 const fileInput = document.querySelector(".file-input")
 let files = []
 
+
 fileInput.addEventListener("change", (event) => {
-    files.push(...Array.from(event.target.files))
+ 
+
+
+     const newFiles = Array.from(event.target.files).map(file => {
+        // vytvoření nového souboru se změněným názvem
+      
+        return new File([file], `${Date.now()}_${file.name}`, { type: file.type });
+    });
+    
+    
+    files.push(...newFiles)
     fileInput.value = ""
     renderPreview()
 })
@@ -12,11 +43,12 @@ fileInput.addEventListener("change", (event) => {
 
    
 let renderPreview = () => {
-    div.innerHTML = ""
+    
     if (files)
         
         {
         files.forEach((file,index) => {
+            
            
             
         
@@ -32,7 +64,7 @@ let renderPreview = () => {
             
 
             //images
-            let images = document.createElement("IMG")
+            let images = document.createElement("img")
             images.classList.add("img-preview")
             images.src = URL.createObjectURL(file)
             
@@ -42,7 +74,8 @@ let renderPreview = () => {
             previewWrapper.appendChild(images)
             previewWrapper.appendChild(imgDescription)
             previewWrapper.appendChild(closeBtn)
-            div.appendChild(previewWrapper)
+            div.append(previewWrapper)
+            
             
             
             closeBtn.addEventListener("click",() => {
@@ -65,35 +98,27 @@ let renderPreview = () => {
 const form = document.querySelector(".project-form")
 form.addEventListener("submit", async (event) => {
     event.preventDefault()
-
+    
    
     const formData = new FormData();
     formData.append("title", event.target.title.value);
     formData.append("preview", event.target.preview.value);
     formData.append("description", event.target.description.value);
-
+    console.log(files)
     // přidáme všechny soubory
     files.forEach(file => formData.append("files", file));
+     for(let [key,value] of formData.entries())
+        console.log(key,value)
+    const endpoint = form.dataset.endpoint
+    sendIMG(endpoint,formData)
     
    
 
-    const response = await fetch("/admin-add_project", {
-        "method":"POST",
-        "body": formData,
-    
-    
-    })
 
- const data = await response.json(); // <-- tady parsuješ JSON z Pythonu
-if (data.redirect) {
-    window.location.href = data.redirect; // redirect funguje
-}
 })
 
 
-
           
-
 
         
    

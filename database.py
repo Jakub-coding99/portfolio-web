@@ -1,15 +1,16 @@
-from typing import Annotated
+from typing import List
 
-from fastapi import Depends, FastAPI, HTTPException, Query
+
 from sqlmodel import Field, Session, SQLModel, create_engine, select,JSON,Column
+from sqlalchemy.ext.mutable import MutableList
 
 class Projects(SQLModel,table = True):
     id: int | None = Field(default=None, primary_key=True)
     title: str
     description: str
-    image_url: list[str] | None = Field(default=None, sa_column=Column(JSON))
     preview: str
     markdown: str
+    image_url: List[str] = Field(sa_column=Column(MutableList.as_mutable(JSON),default=list, nullable=False))
 
 class Admin(SQLModel, table = True):
     id: int | None = Field(default=None, primary_key=True)
