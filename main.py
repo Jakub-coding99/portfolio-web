@@ -12,6 +12,8 @@ from fastapi.responses import RedirectResponse
 from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from dotenv import load_dotenv,find_dotenv
 import markdown
+import re
+from itertools import zip_longest
 
 
 dotenv_path = find_dotenv()
@@ -151,7 +153,7 @@ def get_edit_content(request:Request,id:int,model_type = str):
     config = MODEL.get(model_type)
     model = config["model"]
     
-    delete_img()
+    
     with Session(engine) as session:
         current_img = []
         choosen_model = session.get(model,id)
@@ -245,23 +247,36 @@ def blog_posts():
             post_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
                            "preview":p.preview,"markdown":p.markdown,"endpoint": p.endpoint}
             posts.append(post_format)
+    
     return posts
 
 def delete_img():
-    import re
-    #PRIDAT I BLOG
-    all_markdowns = []
+
     all_projects = all_project()
-    projects_update = []
+    all_posts = blog_posts()
+   
     
-    if len(all_projects) == 0:
+    if len(all_projects) == 0 and len(all_posts) ==0:
         return
+    
+
+    all_content = {
+        "project": []
+
+        ,
+        "blog": []
+        
+    }
+
+    for blog in all_posts:
+        x = {"id" : blog["id"], "markdown":blog["markdown"],"img" : blog["img_url"],"new_imgs": []}
+        all_content["blog"].append(x)
 
     for project in all_projects:
-        pr = {"project_id" : project["id"], "project_markdown":project["markdown"],"project_img" : project["img_url"],"new_imgs": []}
-        projects_update.append(pr)
-        all_markdowns.append(project["markdown"])
-   
+        y = {"id" : project["id"], "markdown":project["markdown"],"img" : project["img_url"],"new_imgs": []}
+        all_content["project"].append(y)
+        
+    
 
     BASE_DIR = os.path.dirname(os.path.abspath(__file__))
     app_path = os.path.join(BASE_DIR,"static/img")
@@ -271,20 +286,47 @@ def delete_img():
         IMAGES.remove(my_img)
     
     images_in_md = []
+    for (blog,project) in zip_longest(all_content['blog'],all_content['project'],fillvalue=None):
+   
+        blog_text = blog["markdown"] if blog else ""
+        project_text = project["markdown"] if project else ""
 
-    for md in projects_update:
-        text = md["project_markdown"]
-        regex = re.findall("(static/img/.+\\w)",text)
-        if len(regex) != 0:
-            test_img = []
-            for r in regex:
-                test_img.append(r)
-                images_in_md.append(r)
-            # print(f"v projektu id: {md["project_id"]} se nachází tyto obrázky: {test_img}")
-            md["new_imgs"] = test_img
-    
-    images_in_md_splitted = [i.split("/")[2] for i in images_in_md]
+
+
+
+
+        regex_blog = re.findall(r"static/img/[^\s)\"']+",blog_text)
+        regex_project = re.findall(r"static/img/[^\s)\"']+",project_text)
+
+
+        
+        if regex_blog or regex_project:
+            b_img = []
+            p_img = []
+            for(b,p) in zip_longest(regex_blog,regex_project,fillvalue=None):
+                
+                if b:
+                    b_img.append(b)
+                    images_in_md.append(b)
+               
+                if p:
+                    p_img.append(p)
+                    images_in_md.append(p)
+                
+            
+            if blog:
+                blog["new_imgs"] = b_img
+            if project:
+                project["new_imgs"] = p_img
+
+    no_none_img = [x for x in images_in_md if x != None]
+
+    images_in_md_splitted = [os.path.basename(i) for i in no_none_img]
+    print(images_in_md_splitted)
+
     # print(f"toto jsou obrazky nachazejici v markdownu: {images_in_md_splitted}")
+
+    
     img_to_del = [x for x in IMAGES if x not in images_in_md_splitted]
     # print(f"toto jsou obrazky, ktere budou smazany: {img_to_del}")
 
@@ -293,19 +335,25 @@ def delete_img():
     
     
     with Session(engine) as session:
-        for p in projects_update:
-    
-            db_projects = session.scalar(select(Projects).filter_by(id = p["project_id"]))
-            
-            db_projects.image_url = p["new_imgs"]
-           
-           
+        for blog in all_content["blog"]:
+            if blog["new_imgs"] is not None:
+                db_blog = session.scalar(select(Blog).filter_by(id = blog["id"]))
+                db_blog.image_url = blog["new_imgs"]
+        
+        for project in all_content["project"]:
+            if project["new_imgs"] is not None:
+                db_project = session.scalar(select(Projects).filter_by(id = project["id"]))
+                db_project.image_url = project["new_imgs"]
      
-            print(f"test: {db_projects.image_url}")
-            session.commit()
+        session.commit()
             
     for delete in img_to_del:
-        os.remove(f"{app_path}/{delete}")
+        try:
+            os.remove(os.path.join(app_path, delete))
+        
+        except (FileNotFoundError):
+            pass
+            
 
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
@@ -314,6 +362,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
     projects = all_project()
+    delete_img()
     
     
     

@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block header %}<header>{% include "header.html" %}</header>{% endblock %}
+
+
+
+<div class="project-section bg-2 text-2">
+    <div class="container-project bg-2 text-2">
+        <div class="project-page">
+            {% for post in posts %}
+            
+            <h1>{{post.title}}</h1>
+        
+            
+            <p>{{post.description | safe }}</p>
+            <a href="{{url_for('get_post', id = post.id)}}">klikni</a>
+
+            {% endfor %}
+            
+         
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- {% include 'footer.html' %} -->
+
+
+{% endblock %}
+

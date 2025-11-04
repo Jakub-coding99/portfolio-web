@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+{% block header %}<header>{% include "header.html" %}</header>{% endblock %}
+
+
+
+<div class="project-section bg-2 text-2">
+    <div class="container-project bg-2 text-2">
+        <div class="project-page">
+            
+            
+            <h1>{{post.title}}, id: {{post.id}}</h1>
+           
+        
+              {{post.description | safe }}
+            
+            
+         
+        </div>
+    </div>
+</div>
+
+
+
+
+
+
+
+
+<!-- {% include 'footer.html' %} -->
+
+
+{% endblock %}
+

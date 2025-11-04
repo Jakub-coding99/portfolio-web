@@ -1,0 +1,120 @@
+  {% extends "base.html" %}
+{% block extra_css %}
+  <link rel="stylesheet" href="{{url_for('static', path = '/admin.css')}}">
+{% endblock %}
+
+{% block title %}Admin Pannel{% endblock %}
+
+
+{% block content %}
+
+{% block header%}<header>{% include "admin/admin_header.html" %}</header>{% endblock %}
+
+
+<div class="admin-panel">
+    <h2>PROJEKTY</h2>
+</div>
+
+
+
+<div class="admin-section">
+    <div class="container">
+        <form class="admin-projects-input project-form"  method="POST"  enctype="multipart/form-data">
+            <a href="{{url_for('get_admin_pannel')}}">zpět</a>
+            <div class="form-wrapper-admin">
+                <h2>Přidat projekt</h2>
+
+            
+                <div class="row-2">
+                    <div class="row">
+                        
+                        <div class="label-input">
+                            <label for="">title</label>
+                            <input type="text" name="title">
+
+                        </div>
+                        
+
+                </div>
+                
+                <div class="row">
+                    <div class="label-input">
+                        <label for="">vyber kam</label>
+                        <select name="model" id="model">
+                            <option value="Project">Projekty</option>
+                            <option value="Blog">Blog</option>
+                        </select>
+                       
+
+                    </div>
+                    
+
+                </div>
+
+
+
+            
+                <div class="row">
+                    <div class="label-input">
+                        <label for="">preview</label>
+                        <input type="input" name="preview">
+                       
+
+                    </div>
+                    
+
+                </div>
+
+
+                </div>
+            
+                <div class="row">
+                    <div class="label-input">
+                        <label for="">description</label>
+                        <textarea type="input" name = "description"></textarea>
+
+
+                    </div>
+                    
+                </div>
+
+
+                <div class="row">
+                    <div class="label-input">
+                        <label for="">Choose image, first image is preview image</label>
+                        <input class="file-input" type="file" id="" name = "files" multiple>
+                        <div class="prev-imgs">
+                            
+                           
+                        </div>
+
+                    </div>
+                    
+
+                </div>
+
+                <div class="row">
+                    <input type="submit">
+
+                </div>
+
+            </div>
+            
+            
+            
+        </form>
+
+
+      
+    </div>
+
+
+    
+</div>
+
+
+{% endblock %}
+
+{% block  js%}<script src="../../static/admin.js"></script>{% endblock %}
+
+
