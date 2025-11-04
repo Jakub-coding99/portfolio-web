@@ -5,7 +5,7 @@ from fastapi.responses import HTMLResponse,JSONResponse
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 from typing import Annotated
 from passlib.context import CryptContext
-from database import Projects, Admin,create_db_and_tables,engine,Session,select
+from database import Projects, Admin,Blog,create_db_and_tables,engine,Session,select
 import os
 from typing import List
 from fastapi.responses import RedirectResponse
@@ -18,9 +18,24 @@ dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
 ADMIN_URL = "/user/admin"
-ADD_PROJECT_URL = "/admin-add_project"
+ADD_PROJECT_URL = "/add/{model_type}"
 ADMIN_PAGE_URL = "/admin-page"
-ADMIN_EDIT_PROJECT = "/edit/project/{id}"
+ADMIN_EDIT_PROJECT = "/edit/{model_type}/{id}"
+
+MODEL = {
+    "project": {
+        "model" : Projects,
+        "template_edit" : "admin/edit_project.html",
+        "template_add" : "admin/add_project.html",
+        "redirect" : ADMIN_URL
+
+    },
+    "blog": {
+        "model":Blog
+
+
+    }
+}
 
 
 app = FastAPI()
@@ -47,16 +62,22 @@ def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
             )
 
 
-@app.get(ADD_PROJECT_URL,response_class = HTMLResponse)
-def get_add_project(request : Request,admin=Depends(get_admin)):
-    return templates.TemplateResponse("admin/admin_add_project.html",{"request":request,"api_url" : ADD_PROJECT_URL})
+@app.get("/add/{model_type}",response_class = HTMLResponse)
+def get_add_project(request : Request,admin=Depends(get_admin),model_type= str):
+    config= MODEL.get(model_type)
+    
+    model = config["model"]
+ 
+    return templates.TemplateResponse(config["template_add"],{"request":request,"api_url" : ADD_PROJECT_URL})
 
 
 
-@app.post(ADD_PROJECT_URL,response_class = HTMLResponse,)
+@app.post("/add/{model_type}",response_class = HTMLResponse,)
 
 async def add_project(request : Request,title:str = Form(...),description:str = Form(...),files: List[UploadFile] = File(None),
-                      preview:str = Form(...),admin=Depends(get_admin)):
+                      preview:str = Form(...),admin=Depends(get_admin),model_type= str):
+    config= MODEL.get(model_type)
+    model = config["model"]
     img_path = []
     
     empty_data = all(len(x) == 0  for x in (title,description,preview))
@@ -76,9 +97,9 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     html_text = markdown.markdown(description)
     markdown_text = description
     
-    new_project = Projects(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
+    new_model = model(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
-        session.add(new_project)
+        session.add(new_model)
         session.commit()
     
     return JSONResponse({"redirect": ADMIN_PAGE_URL})
@@ -91,13 +112,20 @@ def get_admin_pannel(request : Request,admin=Depends(get_admin)):
     return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects})
 
 
-@app.get("/project/{id}",response_class=HTMLResponse)
-def delete_project(request:Request,id : int):
+@app.get("/delete/{model_type}/{id}",response_class=HTMLResponse)
+def delete_project(request:Request,id : int, model_type = str):
+    config = MODEL.get(model_type)
+    print(config)
+    if not config:
+        return HTMLResponse(f"Neplatný model_type: {model_type}", status_code=400)
+
+    model = config["model"]
+    
     with Session(engine) as session:
         app_path = os.path.dirname(os.path.abspath(__file__))
-        choosen_project = session.get(Projects,id)
-        if choosen_project:
-            for img in choosen_project.image_url:
+        choosen_model = session.get(model,id)
+        if choosen_model:
+            for img in choosen_model.image_url:
                 if img == "static/img/no-img.jpg":
                     continue
                 else:
@@ -110,49 +138,55 @@ def delete_project(request:Request,id : int):
                         
                         pass
 
-            session.delete(choosen_project)
+            session.delete(choosen_model)
             session.commit()
 
     return RedirectResponse(url=ADMIN_PAGE_URL,status_code=303)
 
-@app.get(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
-def get_edit_project(request:Request,id:int):
+@app.get("/edit/{model_type}/{id}",response_class = HTMLResponse)
+def get_edit_project(request:Request,id:int,model_type = str):
+    config = MODEL.get(model_type)
+    model = config["model"]
+    
     delete_img()
     with Session(engine) as session:
         current_img = []
-        project = session.get(Projects,id)
-        images = project.image_url
+        choosen_model = session.get(model,id)
+        images = choosen_model.image_url
         for i in images:
             x = i.split("/")
             img = {"name":x[2],"path":i}
             current_img.append(img)
-        project.image_url = current_img
+        choosen_model.image_url = current_img
         
         
-    return templates.TemplateResponse("admin/edit_project.html",{"request":request,"project":project})
+    return templates.TemplateResponse(config["template_edit"],{"request":request,"project":choosen_model})
 
 
-@app.post(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
-async def post_edit_project(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None)):
+@app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
+async def post_edit_project(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None),model_type = str):
+    config = MODEL.get(model_type)
+    model = config["model"]
+    
     markdown_text = description
     with Session(engine) as session:
-        project = session.get(Projects,id)
-        if not project:
+        choosen_model = session.get(model,id)
+        if not choosen_model:
             return {"eror":"not found"}
         
-        if project.title != title:
-            project.title = title
+        if choosen_model.title != title:
+           choosen_model.title = title
         
-        if project.markdown != markdown_text:
+        if choosen_model.markdown != markdown_text:
             new_description = markdown.markdown(markdown_text)
-            project.description = new_description
-            project.markdown = markdown_text
+            choosen_model.description = new_description
+            choosen_model.markdown = markdown_text
         
-        if project.preview != preview:
-            project.preview = preview
+        if choosen_model.preview != preview:
+            choosen_model.preview = preview
         
         try:
-            await upload_img(files,project,None)
+            await upload_img(files,choosen_model,None)
             
             
         except TypeError:
@@ -162,7 +196,7 @@ async def post_edit_project(request:Request,id:int,title: str = Form(...),descri
         return JSONResponse({"redirect": ADMIN_PAGE_URL})
 
 
-async def upload_img(files,project,img_path):
+async def upload_img(files,choosen_model,img_path):
     
     for file in files:
        
@@ -170,8 +204,8 @@ async def upload_img(files,project,img_path):
         os.makedirs(DIR,exist_ok=True)
         location_file = os.path.join(DIR,file.filename)
        
-        if project:
-            project.image_url.append(location_file)
+        if choosen_model:
+            choosen_model.image_url.append(location_file)
         
         if type(img_path)  == list:
             img_path.append(location_file)
@@ -195,13 +229,22 @@ def all_project():
         for p in all_projects:
             project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,"preview":p.preview,"markdown":p.markdown}
             projects.append(project_format)
-   
-    
     return projects
+
+
+def blog_posts():
+    posts = []
+    with Session(engine) as session:
+        blog = select(Blog)
+        all_posts = session.scalars(blog).all()
+        for p in all_posts:
+            post_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,"preview":p.preview,"markdown":p.markdown}
+            posts.append(post_format)
+    return posts
 
 def delete_img():
     import re
-
+    #PRIDAT I BLOG
     all_markdowns = []
     all_projects = all_project()
     projects_update = []
@@ -274,7 +317,9 @@ def home(request : Request):
 
 @app.get("/projects/{id}",response_class=HTMLResponse)
 def get_project(request : Request ,id : int):
+    
     all_projects = all_project()
+    
     for p in all_projects:
         
         if p["id"] == id:
@@ -293,6 +338,29 @@ async def contact(request:Request):
     await send_email(data)
     return RedirectResponse(url="/#contact",status_code=303)
 
+
+
+@app.get("/blog",response_class=HTMLResponse)
+def blog(request:Request):
+    posts = blog_posts()
+    print(posts)
+    return templates.TemplateResponse("blog.html", {"request":request,"posts":posts})
+
+
+@app.get("/blog/{id}",response_class=HTMLResponse)
+def get_post(request : Request ,id : int):
+    all_posts = blog_posts()
+    
+    for p in all_posts:
+        
+        if p["id"] == id:
+            post = p
+            break
+
+    if p is None:
+        return HTMLResponse("<p>chyba</p>",status_code=404)
+    return templates.TemplateResponse("post_template.html", {"request":request, "post" : post})
+    
 
 
 async def send_email(data):

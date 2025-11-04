@@ -12,6 +12,15 @@ class Projects(SQLModel,table = True):
     markdown: str
     image_url: List[str] = Field(sa_column=Column(MutableList.as_mutable(JSON),default=list, nullable=False))
 
+
+class Blog(SQLModel,table = True):
+    id: int | None = Field(default=None, primary_key=True)
+    title: str
+    description: str
+    preview: str
+    markdown: str
+    image_url: List[str] = Field(sa_column=Column(MutableList.as_mutable(JSON),default=list, nullable=False))
+
 class Admin(SQLModel, table = True):
     id: int | None = Field(default=None, primary_key=True)
     user_name: str

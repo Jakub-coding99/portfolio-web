@@ -874,8 +874,23 @@ textarea,
     transform: scale(1.05);
 }
 
+/* BLOG */
 
 
+.container-blog {
+   height: 100vh;
+}
+
+.blog-posts {
+    
+    display: flex;
+    justify-content: center;
+    margin-top: 200px;
+}
+
+
+
+/* FOOTER */
 footer {
     
     display: flex;
