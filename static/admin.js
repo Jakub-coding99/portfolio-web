@@ -16,9 +16,8 @@ if (data.redirect) {
 }
 
 
-
 const div = document.querySelector(".prev-imgs")
-console.log(div)
+
 
 const fileInput = document.querySelector(".file-input")
 let files = []
@@ -80,7 +79,7 @@ let renderPreview = () => {
             
             closeBtn.addEventListener("click",() => {
                 files.splice(index,1)
-                console.log(files)
+                
                 previewWrapper.remove()
                
                 
@@ -99,17 +98,46 @@ const form = document.querySelector(".project-form")
 form.addEventListener("submit", async (event) => {
     event.preventDefault()
     
-   
+    
+
+
+    
     const formData = new FormData();
     formData.append("title", event.target.title.value);
     formData.append("preview", event.target.preview.value);
     formData.append("description", event.target.description.value);
-    console.log(files)
+    
     // přidáme všechny soubory
     files.forEach(file => formData.append("files", file));
      for(let [key,value] of formData.entries())
         console.log(key,value)
-    const endpoint = form.dataset.endpoint
+    let endpoint = ""
+    try {
+        let choice = event.target.model.value
+        
+        if (choice === "Project"){
+            endpoint = "/add/project"
+
+        }
+
+        if (choice === "Blog"){
+            endpoint = "/add/blog"
+        }
+
+
+
+    }
+    catch(TypeError) { 
+        
+        endpoint = form.dataset.endpoint
+        
+    }
+    
+    
+    
+    
+   
+   
     sendIMG(endpoint,formData)
     
    

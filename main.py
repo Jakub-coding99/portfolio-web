@@ -25,13 +25,17 @@ ADMIN_EDIT_PROJECT = "/edit/{model_type}/{id}"
 MODEL = {
     "project": {
         "model" : Projects,
-        "template_edit" : "admin/edit_project.html",
+        "template_edit" : "admin/edit_content.html",
         "template_add" : "admin/add_project.html",
-        "redirect" : ADMIN_URL
+        "redirect" : ADMIN_URL,
+        "model_type" : "project"
+        
 
     },
     "blog": {
-        "model":Blog
+        "model":Blog,
+        "template_edit": "admin/edit_content.html",
+        "model_type" : "blog"
 
 
     }
@@ -62,13 +66,13 @@ def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
             )
 
 
-@app.get("/add/{model_type}",response_class = HTMLResponse)
-def get_add_project(request : Request,admin=Depends(get_admin),model_type= str):
-    config= MODEL.get(model_type)
+@app.get("/add-new",response_class = HTMLResponse)
+def add_content(request : Request,admin=Depends(get_admin),model_type= str):
     
-    model = config["model"]
+    
+    
  
-    return templates.TemplateResponse(config["template_add"],{"request":request,"api_url" : ADD_PROJECT_URL})
+    return templates.TemplateResponse("admin/add_content.html",{"request":request,"api_url" : ADD_PROJECT_URL})
 
 
 
@@ -109,15 +113,14 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
 @app.get(ADMIN_PAGE_URL, response_class=HTMLResponse)
 def get_admin_pannel(request : Request,admin=Depends(get_admin)):
     projects = all_project()
-    return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects})
+    posts = blog_posts()
+    return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects,"posts":posts})
 
 
 @app.get("/delete/{model_type}/{id}",response_class=HTMLResponse)
 def delete_project(request:Request,id : int, model_type = str):
     config = MODEL.get(model_type)
-    print(config)
-    if not config:
-        return HTMLResponse(f"Neplatný model_type: {model_type}", status_code=400)
+   
 
     model = config["model"]
     
@@ -144,7 +147,7 @@ def delete_project(request:Request,id : int, model_type = str):
     return RedirectResponse(url=ADMIN_PAGE_URL,status_code=303)
 
 @app.get("/edit/{model_type}/{id}",response_class = HTMLResponse)
-def get_edit_project(request:Request,id:int,model_type = str):
+def get_edit_content(request:Request,id:int,model_type = str):
     config = MODEL.get(model_type)
     model = config["model"]
     
@@ -164,7 +167,7 @@ def get_edit_project(request:Request,id:int,model_type = str):
 
 
 @app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
-async def post_edit_project(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None),model_type = str):
+async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None),model_type = str):
     config = MODEL.get(model_type)
     model = config["model"]
     
@@ -199,7 +202,7 @@ async def post_edit_project(request:Request,id:int,title: str = Form(...),descri
 async def upload_img(files,choosen_model,img_path):
     
     for file in files:
-       
+        print(file)
         DIR = "static/img/"
         os.makedirs(DIR,exist_ok=True)
         location_file = os.path.join(DIR,file.filename)
@@ -227,7 +230,8 @@ def all_project():
         project = select(Projects)
         all_projects = session.scalars(project).all()
         for p in all_projects:
-            project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,"preview":p.preview,"markdown":p.markdown}
+            project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
+                              "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint}
             projects.append(project_format)
     return projects
 
@@ -238,7 +242,8 @@ def blog_posts():
         blog = select(Blog)
         all_posts = session.scalars(blog).all()
         for p in all_posts:
-            post_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,"preview":p.preview,"markdown":p.markdown}
+            post_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
+                           "preview":p.preview,"markdown":p.markdown,"endpoint": p.endpoint}
             posts.append(post_format)
     return posts
 

@@ -27,22 +27,36 @@
 
     
         <div class = button-add>
-            <a href="{{url_for('add_project',model_type = 'project')}}">Přidat projekt</a>
+            <a href="{{url_for('add_content')}}">Přidat projekt</a>
         </div>
         
             <div class="admin-projects">
                 
             
             
-                <table>
+                <table class="dashboard-table">
                     {% for project in projects %}
                         <tr>
                             <td class="row-title"><a href="{{url_for('get_project',id = project.id)}}">{{project.title}}</a></td>
-                            <td><a class="edit-btn" href="{{url_for('get_edit_project', id = project.id, model_type = 'project')}}">Upravit</a></td>
+                            <td><a class="edit-btn" href="{{url_for('get_edit_content', id = project.id, model_type = 'project')}}">Upravit</a></td>
                             <td><a class="delete-btn" href="{{url_for('delete_project',id = project.id, model_type = 'project')}}">Smazat</a></td>
                         </tr>
                     {% endfor %}
                 </table>
+
+
+                <table class="dashboard-table">
+                    {% for post in posts %}
+                        <tr>
+                            <td class="row-title"><a href="{{url_for('get_post',id = post.id)}}">{{post.title}}</a></td>
+                            <td><a class="edit-btn" href="{{url_for('get_edit_content', id = post.id, model_type = 'blog')}}">Upravit</a></td>
+                            <td><a class="delete-btn" href="{{url_for('delete_project',id = post.id, model_type = 'blog')}}">Smazat</a></td>
+                        </tr>
+                    {% endfor %}
+                </table>
+
+
+
                 
             </div>
 

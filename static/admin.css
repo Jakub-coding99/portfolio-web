@@ -306,3 +306,7 @@ textarea {
 .close-btn-img:hover {
     background-color: green;
 }
+
+.dashboard-table {
+    margin-top: 20px;
+}
