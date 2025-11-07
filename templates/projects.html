@@ -1,25 +1,80 @@
 {% extends "base.html" %}
 
+
 {% block content %}
 
 {% block header %}<header>{% include "header.html" %}</header>{% endblock %}
 
 <div class="project-section bg-2 text-2">
-    <div class="container-project bg-2 text-2">
-        <div class="project-page">
-            <h1>{{project.title}}</h1>
-        
-            <h3>{{project.title}}</h3>
-            {{project.description | safe }}
+     <div class="modal">
+        <div class="modal-window">
+            <div class="modal-desc">
+                <div class="name-modal">
+                    Galerie obrázků
+
+                </div>
+
+                <div class="close-modal">
+                    <a class="close-modal-btn" href="#">✖</a>
+
+
+                </div>
+
+            </div>
+
             
-         
-            <!-- {% for img in project.img_url %}
-                <img src="../{{img}}" alt="">
-                
-            {% endfor %} -->
+            
+           
+            <div class="modal-img"></div>
+            <div class="btns-modal">
+                  <a class="prev" href="#">◀︎</a>
+                <a  class="next" href="#">▶︎</a>
+              
+
+            </div>
+
 
         </div>
+
+     </div>
+
+    <div class="container-project bg-2 text-2">
+        
+        <div class="project-page">
+             
+            <h1>{{project.title}}</h1>
+           
+            <div class="project-wrapper">
+                <div class="img-preview-wrapper">
+                    <div class="project-img-preview"></div>
+                        <div class="all-images">
+                            {% for img in project.img_url %}
+                                <img class="project-images" src="../../{{img}}" alt="">
+                            {% endfor %}
+                    
+                            
+                        </div>
+                    
+
+                </div>
+                
+                
+            
+            <div class="project-describe">
+                {{project.description | safe }}
+            </div>
+            
+            
+            
+         
+           
+
+        </div>
+       
+
+
     </div>
+</div>
 </div>
 
 
@@ -27,6 +82,9 @@
 
 {% include 'footer.html' %}
 
+{% block js %}
+<script src="../static/project.js"></script>
+{% endblock %}
 
 {% endblock %}
 

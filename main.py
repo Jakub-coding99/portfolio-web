@@ -362,7 +362,7 @@ templates = Jinja2Templates(directory="templates")
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
     projects = all_project()
-    delete_img()
+    # delete_img()
     
     
     
@@ -415,6 +415,25 @@ def get_post(request : Request ,id : int):
         return HTMLResponse("<p>chyba</p>",status_code=404)
     return templates.TemplateResponse("post_template.html", {"request":request, "post" : post})
     
+
+@app.post("/check-img",response_class=HTMLResponse)
+async def check_img(request : Request):
+    response = await request.json()
+    n_title = response["title"]
+    with Session(engine) as session:
+        projects = session.scalar(select(Projects).filter_by(title = n_title))
+    
+        for x in response["images"]:
+            f = x.split("/")
+            formatted = f[5]
+            for content_img in projects.image_url:
+                if formatted in content_img:
+                    projects.image_url.remove(content_img)
+            session.commit()
+            
+                
+
+
 
 
 async def send_email(data):
