@@ -24,11 +24,12 @@ let files = []
 
 
 fileInput.addEventListener("change", (event) => {
+    event.preventDefault()
  
 
 
      const newFiles = Array.from(event.target.files).map(file => {
-        // vytvoření nového souboru se změněným názvem
+      
       
         return new File([file], `${Date.now()}_${file.name}`, { type: file.type });
     });
@@ -110,8 +111,7 @@ form.addEventListener("submit", async (event) => {
 
     // přidáme všechny soubory
     files.forEach(file => formData.append("files", file));
-     for(let [key,value] of formData.entries())
-        console.log(key,value)
+   
     let endpoint = ""
     try {
         let choice = event.target.model.value
@@ -135,25 +135,25 @@ form.addEventListener("submit", async (event) => {
     }
     
     
-    
+    if(img_list.length > 0){
+        await deleteImage(img_list, event.target.title.value,endpoint);
+}
  
    
     sendIMG(endpoint,formData)
-           if(img_list.length > 0){
-    await deleteImage(img_list, event.target.title.value);
-}
+          
    
 
 
 })
 
 
-const deleteImage = async (t,title) => {
+const deleteImage = async (t,title,endpoint) => {
     
-    
-    const response = await fetch("/check-img", {
+    console.log(endpoint)
+    const response = await fetch("/delete-img", {
         "method":"post",
-        "body": JSON.stringify({"title":title,"images":t})
+        "body": JSON.stringify({"title":title, "endpoint":endpoint,"images":t,})
         
         
 
@@ -162,7 +162,7 @@ const deleteImage = async (t,title) => {
 
 }
 
-const test = () => {
+const chooseDeleteIMG = () => {
    
     const Images = document.querySelectorAll(".preview-wrapper")
     
@@ -170,20 +170,19 @@ const test = () => {
         img.addEventListener("click", (event) => {
             let childs = img.children
             let childImg = childs[0].src
-            let descr = childs[1]
             img_list.push(childImg)
             img.style.display = "none"
             
         })
        
-        console.log(img_list)
+       
     })
    
 }
 
 
         
-test()
+chooseDeleteIMG()
 
         
         

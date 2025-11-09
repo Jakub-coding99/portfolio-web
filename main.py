@@ -16,6 +16,8 @@ import re
 from itertools import zip_longest
 
 
+#UPRAVIT DELETE IMG FUNCTION A CHECK_IMG PRO PROJECT I BLOG
+
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
@@ -416,20 +418,48 @@ def get_post(request : Request ,id : int):
     return templates.TemplateResponse("post_template.html", {"request":request, "post" : post})
     
 
-@app.post("/check-img",response_class=HTMLResponse)
+@app.post("/delete-img",response_class=HTMLResponse)
 async def check_img(request : Request):
+    from urllib.parse import unquote
+    img_to_del = []
     response = await request.json()
-    n_title = response["title"]
-    with Session(engine) as session:
-        projects = session.scalar(select(Projects).filter_by(title = n_title))
+    print(response)
     
+   
+    endpoint = response["endpoint"].split("/")[-2]
+
+    with Session(engine) as session:
+        if endpoint == "project":
+            content = session.scalar(select(Projects).filter_by(title = response["title"]))
+        else:
+            content = session.scalar(select(Blog).filter_by(title = response["title"]))
+
+        
         for x in response["images"]:
-            f = x.split("/")
+            
+            decoded = unquote(x)
+            
+            f = decoded.split("/")
             formatted = f[5]
-            for content_img in projects.image_url:
+            
+            for content_img in content.image_url:
+                
+                
+                
                 if formatted in content_img:
-                    projects.image_url.remove(content_img)
-            session.commit()
+                    
+                    content.image_url.remove(content_img)
+                    img_to_del.append(content_img)
+
+
+        session.commit()
+    
+    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    app_path = os.path.join(BASE_DIR)
+    
+    for del_img in img_to_del:
+        x = f"{app_path}/{del_img}"
+        os.remove(x)
             
                 
 

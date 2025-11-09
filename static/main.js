@@ -140,7 +140,7 @@ let animateFunc = () => {
 
 
     descText = document.querySelector(".about-text")
-    console.log(descText)
+   
     observer.observe(descText)
 
 
