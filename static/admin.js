@@ -88,6 +88,7 @@ let renderPreview = () => {
                 e.preventDefault()
                  files = files.filter(f => f !== file); 
             renderPreview(); 
+            
                 
                 previewWrapper.remove()
                
@@ -140,7 +141,7 @@ form.addEventListener("submit", async (event) => {
         endpoint = form.dataset.endpoint
         
     }
-    console.log(img_list)
+   console.log(img_list)
     
     if(img_list.length > 0){
         await deleteImage(img_list, event.target.title.value,endpoint);
@@ -160,6 +161,9 @@ const deleteImage = async (t,title,endpoint) => {
     console.log(endpoint)
     const response = await fetch("/delete-img", {
         "method":"post",
+        "headers": {
+    "Content-Type": "application/json"  
+  },
         "body": JSON.stringify({"title":title, "endpoint":endpoint,"images":t,})
         
         
@@ -178,10 +182,11 @@ const chooseDeleteIMG = () => {
         
         a.addEventListener("click", (event) => {
             let childs = img.children
-            let childImg = childs[0].src
+            let childImg = childs[1].currentSrc
+            console.log(childImg)
             img_list.push(childImg)
             img.style.display = "none"
-            console.log(img_list)
+           
             
         })
        
@@ -192,7 +197,7 @@ const chooseDeleteIMG = () => {
 
 
 
-
+chooseDeleteIMG()
         
         
 
