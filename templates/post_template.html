@@ -6,31 +6,39 @@
 
 
 
-<div class="project-section bg-2 text-2">
-    <div class="container-project bg-2 text-2">
-        <div class="project-page">
+<div class="blog-section bg-2 text-2">
+     
+    <div class="container-blog  bg-2 text-2">
+       
+        
+             <div class="blog-header">
+                <div class="blog-photo">
+                    <img src="../{{post.img_url[0]}}" alt="">
+                </div>
+                
+                
+                <h2>{{post.title}}</h2>
+
+
+            </div>
             
-            
-            <h1>{{post.title}}, id: {{post.id}}</h1>
+           
+            <div class="blog-content">
+
+                {{post.description | safe }}
+            </div>
            
         
-              {{post.description | safe }}
+              
             
             
          
-        </div>
+        
     </div>
 </div>
 
 
-
-
-
-
-
-
-<!-- {% include 'footer.html' %} -->
-
+{% include 'footer.html' %} 
 
 {% endblock %}
 

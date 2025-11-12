@@ -27,7 +27,7 @@
 
     
         <div class = button-add>
-            <a href="{{url_for('add_content')}}">Přidat projekt</a>
+            <a href="{{url_for('add_content')}}">Přidat</a>
         </div>
         
             <div class="admin-projects">
@@ -35,6 +35,7 @@
             
             
                 <table class="dashboard-table">
+                    <h3>Projekty</h3>
                     {% for project in projects %}
                         <tr>
                             <td class="row-title"><a href="{{url_for('get_project',id = project.id)}}">{{project.title}}</a></td>
@@ -46,6 +47,7 @@
 
 
                 <table class="dashboard-table">
+                    <h3>Blog</h3>
                     {% for post in posts %}
                         <tr>
                             <td class="row-title"><a href="{{url_for('get_post',id = post.id)}}">{{post.title}}</a></td>

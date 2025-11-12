@@ -48,14 +48,19 @@ let renderPreview = () => {
         
         {
         files.forEach((file,index) => {
+            if (document.querySelector(".preview-wrapper"))
+            {
+                console.log("element existuje")
+            }
             
            
             
         
             // BUTTON
-            const closeBtn = document.createElement("p")
+            const closeBtn = document.createElement("a")
             closeBtn.classList.add("close-btn-img")
             closeBtn.textContent = "X"
+            closeBtn.href = "#"
             
             //image description
             let imgDescription = document.createElement("p")
@@ -68,6 +73,7 @@ let renderPreview = () => {
             images.classList.add("img-preview")
             images.src = URL.createObjectURL(file)
             
+            
             const previewWrapper = document.createElement("div")
             previewWrapper.classList.add("preview-wrapper")
 
@@ -78,7 +84,8 @@ let renderPreview = () => {
             
             
             
-            closeBtn.addEventListener("click",() => {
+            closeBtn.addEventListener("click",(e) => {
+                e.preventDefault()
                  files = files.filter(f => f !== file); 
             renderPreview(); 
                 
@@ -133,7 +140,7 @@ form.addEventListener("submit", async (event) => {
         endpoint = form.dataset.endpoint
         
     }
-    
+    console.log(img_list)
     
     if(img_list.length > 0){
         await deleteImage(img_list, event.target.title.value,endpoint);
@@ -167,11 +174,14 @@ const chooseDeleteIMG = () => {
     const Images = document.querySelectorAll(".preview-wrapper")
     
     Images.forEach( img => {
-        img.addEventListener("click", (event) => {
+        let a = img.querySelector("a")
+        
+        a.addEventListener("click", (event) => {
             let childs = img.children
             let childImg = childs[0].src
             img_list.push(childImg)
             img.style.display = "none"
+            console.log(img_list)
             
         })
        
@@ -181,8 +191,7 @@ const chooseDeleteIMG = () => {
 }
 
 
-        
-chooseDeleteIMG()
+
 
         
         

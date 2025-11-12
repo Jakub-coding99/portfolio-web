@@ -262,6 +262,7 @@ span {
 .container-hero,
 .container-about,
 .container-project,
+.container-blog,
 .container {
 
     max-width: 1200px;
@@ -618,7 +619,10 @@ footer,
 }
 
 .project p {
-    margin: 10px;
+    display: flex;
+    justify-content: center;
+    margin: 15px;
+  
     grid-row: 3;
 }
 
@@ -1043,19 +1047,168 @@ textarea,
 
 /* BLOG */
 
-
-.container-blog {
-   height: 100vh;
+.blog-section {
+    justify-content: center;
+    padding: 3rem 2rem;
+   
 }
 
-.blog-posts {
+
+
+.blog-preview {
+    display: grid;
+    grid-template-columns: 1fr;
+    grid-template-rows: 50% 10% 40% ;
+   
+    height: 60vh;
+    margin: 15px;
+   
+
+}
+
+.blog-preview-photo {
+    grid-row: 1;
+    grid-column: 1;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    transition: transform 1s ease;
+    overflow: hidden;
+
+}
+
+.blog-preview-photo img {
+     width: 100%;
+    height: 100%;
+    border-radius: 10px;
+}
+
+.blog-preview-title {
+     grid-row: 2;
+      grid-column: 1;
+      margin: 15px 0;
+      text-align: center;
     
+}
+.blog-preview-desc {
+     grid-column: 1;
+     grid-row: 3;
+     margin: 10px;
+}
+
+.blog-preview a {
+    text-decoration: none;
+    color: var(--bg-color-1);
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.blog-preview-photo:hover{
+    transform: scale(1.05);
+   
+
+}
+
+.blog-preview-photo:hover span {
+    opacity: 1;
+   
+
+}
+
+
+
+.blog-preview-photo svg:hover {
+    transform: translateX(10px);
+    
+
+}
+
+
+.blog-preview-photo  span {
+    position: absolute;
+    top: 70%;
+    right: 20%;
+    background-color: rgb(255, 255, 255);
+    padding: 8px;
+    color: var(--bg-color-1);
+    opacity: 0;
+     transition: opacity 1s ease;
+   
+
+}
+
+.blog-preview-photo svg  {
+   width: 18px;
+   height: 18px;
+     transition: transform 0.5s ease;
+     margin: 5px;
+   
+
+   
+   
+}
+
+/* BLOG-TEMPLATES */
+
+.blog-header {
+    
+    width: 100%;
+    
+    margin: 30px 0 20px 0  !important;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    
+    margin: 10px 0 ;
+   
+
+}
+
+
+.blog-header h2 {
     display: flex;
     justify-content: center;
-    margin-top: 200px;
+}
+
+.blog-photo {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    margin: 20px;
+    height: 70vh;
+}
+
+.blog-photo img {
+    width: 100%;
+ 
 }
 
 
+
+.test-img {
+    display: flex;
+    justify-content: center;
+    
+}
+
+.test-img img {
+
+}
+
+
+
+
+
+.header-img {
+    height: 40vh;
+}
+
+
+.header-img img  {
+    width: 100%;
+    height: 100%
+    
+}
 
 /* FOOTER */
 footer {

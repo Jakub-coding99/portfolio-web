@@ -9,15 +9,46 @@
 <div class="project-section bg-2 text-2">
     <div class="container-project bg-2 text-2">
         <div class="project-page">
+            <h1>BLOG</h1>
+            
+            <div class="projects">
             {% for post in posts %}
+
+                <div class="blog-preview">
+                    <div class="blog-preview-photo">
+                        
+                        <a href="{{url_for('get_post', id = post.id)}}"><img src="../{{post.img_url[0]}}" alt="">
+                            <span><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                <path fill-rule="evenodd" d="M1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l-4 4a.5.5 0 0 1-.708-.708L13.293 8.5H1.5A.5.5 0 0 1 1 8"/>
+                                </svg>
+                            </span></a>
+                                                    
+
+
+                    </div>
+
+                    <div class="blog-preview-title">
+                        <a href="{{url_for('get_post', id = post.id)}}">{{post.title}}</a>
+
+                    </div>
+
+                    <div class="blog-preview-desc">
+                        {{post.preview | safe }}
+
+
+                    </div>
+
+                   
+
+
+
+                </div>
             
-            <h1>{{post.title}}</h1>
         
-            
-            <p>{{post.description | safe }}</p>
-            <a href="{{url_for('get_post', id = post.id)}}">klikni</a>
+         
 
             {% endfor %}
+            </div>
             
          
         </div>
@@ -31,7 +62,7 @@
 
 
 
-<!-- {% include 'footer.html' %} -->
+{% include 'footer.html' %}
 
 
 {% endblock %}
