@@ -413,3 +413,13 @@ input[type = "file"]{
 .dashboard-table {
     margin-top: 20px;
 }
+
+
+.dashboard-table h3 {
+    margin: 20px 0 ;
+
+}
+
+table {
+    margin: 15px 0 ;
+}
