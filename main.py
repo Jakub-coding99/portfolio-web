@@ -393,8 +393,8 @@ def get_project(request : Request ,id : int):
 async def contact(request:Request):
     
     
-    # response = await request.json()
-    # await send_email(response)
+    response = await request.json()
+    await send_email(response)
     return RedirectResponse(url="/#contact",status_code=303)
 
 

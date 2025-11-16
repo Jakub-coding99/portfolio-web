@@ -182,7 +182,7 @@ let animateFunc = () => {
 
    if (document.querySelectorAll(".blog-item")) {
         let blogPosts = document.querySelectorAll(".blog-item")
-        console.log(blogPosts)
+        
         blogPosts.forEach(el => observer.observe(el))
        
 
