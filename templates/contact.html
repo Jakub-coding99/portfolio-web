@@ -1,5 +1,12 @@
 <div class="contact-section bg-2 text-1" id="contact">
     <div class="container bg-2 text-1">
+        <div class="toast">
+            <div class="toast-divider"></div>
+            <p class="close-toast">X</p>
+            <p class="text-toast">Email úspěšně odeslán</p>
+
+
+        </div>
         
         <div class="form-wrapper">
 
@@ -25,7 +32,7 @@
            
             
         </div>
-                <form action="{{url_for('contact')}}" method="post">
+                <form  method="POST" id="form-contact" action="{{url_for('contact')}}">
                     <div class="form-row">
                         <div class="form-line">
                             <label for=""> <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">

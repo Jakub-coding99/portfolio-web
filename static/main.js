@@ -180,8 +180,9 @@ let animateFunc = () => {
     }
 
 
-   if (document.querySelectorAll(".blog-preview")) {
-        let blogPosts = document.querySelectorAll(".blog-preview")
+   if (document.querySelectorAll(".blog-item")) {
+        let blogPosts = document.querySelectorAll(".blog-item")
+        console.log(blogPosts)
         blogPosts.forEach(el => observer.observe(el))
        
 
@@ -196,3 +197,39 @@ animateFunc()
 
 
 
+const contactForm = document.querySelector("#form-contact")
+contactForm.addEventListener("submit",async (e) => {
+    const toast = document.querySelector(".toast")
+    toast.classList.remove("activated")
+    
+    e.preventDefault()
+    let email = e.target.email.value
+    let name = e.target.name.value
+    let msg = e.target.msg.value
+    let contactData = {"email":email,"name":name,"msg":msg}
+    
+    const response = await fetch("/submit_contact",{
+        "method":"post",
+        "headers": {
+            "Content-Type": "application/json"},
+        "body":JSON.stringify(contactData)
+
+        }
+    )
+
+    e.target.email.value = ""
+    e.target.name.value = ""
+    e.target.msg.value = ""
+
+    
+    toast.classList.add("activated")
+    
+    const closeToast = toast.querySelector(".close-toast")
+    closeToast.addEventListener("click", () => {
+        toast.classList.remove("activated")
+    })
+
+        
+
+
+})

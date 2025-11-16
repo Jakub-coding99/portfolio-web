@@ -38,13 +38,15 @@ const showImage = () => {
         
     })
 
-    closeButton.addEventListener("click", () => {
+    closeButton.addEventListener("click", (e) => {
+        e.preventDefault()
         modal.style.display = "none"
         modalImg.innerHTML = ""
         
     })
 
     next.addEventListener("click", (event) => {
+            event.preventDefault()
             img_index = (img_index + 1) % allImages.length
            
             modalImg.querySelector("img").src = allImages[img_index].src
@@ -52,6 +54,7 @@ const showImage = () => {
         })
    
     prev.addEventListener("click", (event) => {
+        event.preventDefault()
         img_index = (img_index - 1 + allImages.length) % allImages.length
         modalImg.querySelector("img").src = allImages[img_index].src
 

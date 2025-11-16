@@ -50,6 +50,9 @@ app = FastAPI()
 
 security = HTTPBasic()
 
+app.mount("/static",StaticFiles(directory="static"), name="static")
+templates = Jinja2Templates(directory="templates")
+
 create_db_and_tables()
 
 @app.get(ADMIN_URL,response_class = HTMLResponse)
@@ -358,8 +361,7 @@ def delete_img():
             
 
 
-app.mount("/static",StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
@@ -389,9 +391,10 @@ def get_project(request : Request ,id : int):
 
 @app.post("/submit_contact",response_class=HTMLResponse)
 async def contact(request:Request):
-    form_data = await request.form()
-    data = dict(form_data)
-    await send_email(data)
+    
+    
+    # response = await request.json()
+    # await send_email(response)
     return RedirectResponse(url="/#contact",status_code=303)
 
 
@@ -399,6 +402,9 @@ async def contact(request:Request):
 @app.get("/blog",response_class=HTMLResponse)
 def blog(request:Request):
     posts = blog_posts()
+  
+   
+
     
     return templates.TemplateResponse("blog.html", {"request":request,"posts":posts})
 
