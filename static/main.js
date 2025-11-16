@@ -26,13 +26,21 @@ document.querySelectorAll(".nav-link").forEach( n =>   n.addEventListener("click
 
 
 let textWriter =  (el,t,i = 0) => {
-   
-    if (i === t.length){
+    if ( document.querySelector(".bracket")) {
+         if (i === t.length){
         let bracket = document.querySelector(".bracket")
         bracket.classList.toggle("on")
         return
     }
 
+        
+    }
+
+    else {
+        return
+    }
+   
+   
 
     
     el.textContent += t[i]
@@ -58,7 +66,11 @@ function sleep(ms) {
 
 
 async function mottoWriter()  {
-    let writeMotto = document.querySelector(".new-motto")
+
+    if (document.querySelector(".new-motto")) {
+
+         let writeMotto = document.querySelector(".new-motto")
+
    
     
     const motto = ['"Každá chyba je krok blíž k řešení"','"Každý projekt je krok vpřed"','"Cíl? Růst s každým řádkem"']
@@ -91,6 +103,14 @@ async function mottoWriter()  {
 
 
     }
+
+    else {
+        return
+    }
+   
+
+
+    }
     
     
 
@@ -100,9 +120,8 @@ mottoWriter()
 
 document.addEventListener("scroll", (event) => {
     
-    
-    
-    if (scrollY > 350) {
+    if (document.querySelector(".arrow")) {
+          if (scrollY > 350) {
         document.querySelector(".arrow").classList.add("on")
 
     }
@@ -110,6 +129,14 @@ document.addEventListener("scroll", (event) => {
         document.querySelector(".arrow").classList.remove("on")
 
     }
+
+
+    }
+    else {
+        return
+    }
+    
+  
 })
 
 
@@ -132,16 +159,35 @@ let animateFunc = () => {
 
     const observer = new IntersectionObserver(callback,options)
 
-    let project = document.querySelectorAll(".project")
-    project.forEach(el => observer.observe(el))
+    if (document.querySelectorAll(".project")) {
+          let project = document.querySelectorAll(".project")
+        project.forEach(el => observer.observe(el))
 
-    about = document.querySelector(".container-about")
-    observer.observe(about)
+    }
+
+  
+
+    if (document.querySelector(".container-about")){
+        let about = document.querySelector(".container-about")
+        observer.observe(about)
+
+    }
+
+    if (document.querySelector(".about-text")) {
+        let descText = document.querySelector(".about-text")
+        observer.observe(descText)
+
+    }
 
 
-    descText = document.querySelector(".about-text")
-   
-    observer.observe(descText)
+   if (document.querySelectorAll(".blog-preview")) {
+        let blogPosts = document.querySelectorAll(".blog-preview")
+        blogPosts.forEach(el => observer.observe(el))
+       
+
+   }
+
+    
 
 
 }

@@ -27,6 +27,96 @@
 
                 {{post.description | safe }}
             </div>
+
+            <div class="post-line"></div>
+            <div class="next-posts">
+                
+                {% if next_post == None and prev_post == None %}
+
+
+
+                    
+                
+                
+                {% elif next_post == None %}
+                <div class="prev-next">
+                        
+                            <p class="desc-art">Předchozí >></p>
+                    </div>
+
+                        
+                    <div class="articles">
+                        <div class="article-preview">
+                            <a class="article-img" href="{{url_for('get_post', id = prev_post.id)}}"><img src="../{{prev_post.img_url[0]}}" alt=""></a>
+                             <a class="article-title" href="{{url_for('get_post', id = prev_post.id)}}"><p>{{prev_post.title}}</p></a>
+
+
+                        </div>
+
+
+
+                    </div>
+
+
+                {% elif prev_post == None %}
+                    <div class="prev-next">
+                        
+                            <p class="desc-art"><span><<</span>Následující </p>
+                    </div>
+
+                    <div class="articles">
+                        <div class="article-preview">
+                            <a class="article-img" href="{{url_for('get_post', id = next_post.id)}}"><img src="../{{next_post.img_url[0]}}" alt=""></a>
+                             <a class="article-title" href="{{url_for('get_post', id = next_post.id)}}"><p>{{next_post.title}}</p></a>
+
+
+                        </div>
+
+
+
+                    </div>
+                
+                    
+                
+                
+                    {% else %}
+                    <div class="prev-next">
+                        
+                            <p class="desc-art"> << Předchozí článek</p>
+                            
+                            <p class="desc-art">Následující článek >></p>
+                    </div>
+
+                        
+                    <div class="articles">
+
+                    
+                        <div class="article-preview">
+                            <a class="article-img" href="{{url_for('get_post', id = next_post.id)}}"><img src="../{{next_post.img_url[0]}}" alt=""></a>
+                             <a class="article-title" href="{{url_for('get_post', id = next_post.id)}}"><p>{{next_post.title}}</p></a>
+
+
+                        </div>
+
+                    
+
+                    
+                        
+                        <div class="article-preview">
+                            <a class="article-img" href="{{url_for('get_post', id = prev_post.id)}}"> <img src="../{{prev_post.img_url[0]}}" alt=""></a>
+                           
+                             <a class="article-title" href="{{url_for('get_post', id = prev_post.id)}}"><p>{{prev_post.title}}</p></a>
+
+
+                        </div>
+                    </div>
+                    
+                
+               
+
+                {% endif %}
+
+            </div>
            
         
               

@@ -139,7 +139,8 @@ def delete_project(request:Request,id : int, model_type = str):
                     try:
                         
                         to_del = f"{app_path}/{img}"
-                        print(to_del)
+                       
+
                         os.remove(to_del)
                     except (FileNotFoundError, PermissionError):
                         
@@ -206,7 +207,6 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
 async def upload_img(files,choosen_model,img_path):
     
     for file in files:
-        print(file)
         DIR = "static/img/"
         os.makedirs(DIR,exist_ok=True)
         location_file = os.path.join(DIR,file.filename)
@@ -324,7 +324,7 @@ def delete_img():
     no_none_img = [x for x in images_in_md if x != None]
 
     images_in_md_splitted = [os.path.basename(i) for i in no_none_img]
-    print(images_in_md_splitted)
+    
 
     # print(f"toto jsou obrazky nachazejici v markdownu: {images_in_md_splitted}")
 
@@ -399,7 +399,7 @@ async def contact(request:Request):
 @app.get("/blog",response_class=HTMLResponse)
 def blog(request:Request):
     posts = blog_posts()
-    print(posts)
+    
     return templates.TemplateResponse("blog.html", {"request":request,"posts":posts})
 
 
@@ -415,7 +415,34 @@ def get_post(request : Request ,id : int):
 
     if p is None:
         return HTMLResponse("<p>chyba</p>",status_code=404)
-    return templates.TemplateResponse("post_template.html", {"request":request, "post" : post})
+    
+    prev = {}
+    next = {}
+
+    index = all_posts.index(p)
+    print(index)
+    print(len(all_posts))
+
+    if index == 0:
+        prev = all_posts[index + 1]
+        next = None
+
+    elif all_posts[-1] == p:
+        prev = None
+        next = all_posts[index - 1]
+        
+    
+
+    else: 
+        prev = all_posts[index + 1]
+        next = all_posts[index - 1]
+        
+
+    
+    
+
+
+    return templates.TemplateResponse("post_template.html", {"request":request, "post" : post,"next_post":next,"prev_post":prev})
     
 
 @app.post("/delete-img",response_class=HTMLResponse)
@@ -423,8 +450,7 @@ async def check_img(request : Request):
     from urllib.parse import unquote
     img_to_del = []
     response = await request.json()
-    print(response)
-    
+
    
     endpoint = response["endpoint"].split("/")[-2]
 
