@@ -39,8 +39,8 @@
                     {% for project in projects %}
                         <tr>
                             <td class="row-title"><a href="{{url_for('get_project',id = project.id)}}">{{project.title}}</a></td>
-                            <td><a class="edit-btn" href="{{url_for('get_edit_content', id = project.id, model_type = 'project')}}">Upravit</a></td>
-                            <td><a class="delete-btn" href="{{url_for('delete_project',id = project.id, model_type = 'project')}}">Smazat</a></td>
+                            <td class="btns-td"><a class="edit-btn" href="{{url_for('get_edit_content', id = project.id, model_type = 'project')}}">Upravit</a></td>
+                            <td class="btns-td"><a class="delete-btn" href="{{url_for('delete_project',id = project.id, model_type = 'project')}}">Smazat</a></td>
                         </tr>
                     {% endfor %}
                 </table>

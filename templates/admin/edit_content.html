@@ -29,16 +29,20 @@
                 <h2>Upravit {{project.endpoint}}</h2>
 
             
-                <div class="row-2 edit-row">
-            <div class="label-input edit-label">
+                <div class="row-2">
+            <div class="label-input ">
                 <label for="title">Název</label>
                 <input type="text" value="{{project.title}}" name="title">
             </div>
 
-            <div class="label-input edit-label ">
+            {% if project.endpoint != "blog" %}
+
+            <div class="label-input  ">
                 <label for="preview">Text náhledu</label>
                <input type="text"  id="" value="{{project.preview}}" name="preview">
             </div>
+
+            {% endif %}
 
           
         </div>

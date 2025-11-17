@@ -29,6 +29,7 @@ body {
     grid-template-columns: 15% 85%;
     grid-template-rows: auto;
      background-color: rgb(200, 196, 196);
+    font-size: 16px;
 }
 
 /* header */
@@ -240,6 +241,16 @@ tr:nth-child(even) {background-color: #555454;}
     padding: 40px;
    
 }
+.label-input label{
+    color: black;
+    font-weight: bold;
+    font-size: 18px;
+     
+}
+
+.label-input input,#model,textarea,input[type = "submit"] {
+    font-size: 16px;
+}
 
 
 .row {
@@ -279,7 +290,53 @@ textarea {
     
 } 
 
-input[type = "submit"],input[type = "text"],select{
+    .select-wrap  {
+        position: relative;
+        width: 8vw;
+        
+        
+        margin: 10px 0 ;
+        border-radius: 8px;
+        
+        
+    }
+
+    #model {
+         -webkit-appearance: none;
+        -moz-appearance: none;
+        appearance: none;
+        background:none;
+        width: 100%;
+        color: var(--bg-color-1);
+        background-color: #ffffff;
+        padding-right: 50px !important;
+        height: 100%;
+        border: none;
+        margin: 0 !important;
+        outline: none;
+       
+       
+    }
+
+    .select-wrap::after {
+        content: "▼";;
+        position: absolute;
+        top: 50% ;
+        transform: translateY(-50%);
+        font-size: 14px;
+        right: 0;
+        background-color: transparent;
+        padding: 9px;
+        overflow: hidden;
+       border-radius: 10px;
+        color: var(--bg-color-1);
+        pointer-events: none;
+
+    }
+
+
+
+input[type = "submit"],input[type = "text"],#model{
     justify-content: center;
     display: flex;
     
@@ -296,6 +353,7 @@ input[type = "submit"],input[type = "text"],select{
 #edit-form  input[type = "text"]{
     width: 90%;
     margin-right: 15px;
+    width: 100%
     
     
   
@@ -314,6 +372,11 @@ input[type = "submit"],input[type = "text"],select{
 select {
     margin-top: auto;
 }
+
+
+
+
+
 input[type = "submit"] {
     width: 30%;
     border: none;
@@ -329,14 +392,15 @@ input[type = "submit"]:hover {
 input[type = "file"]{
     margin: 10px 0;
     display: none;
+    
 }
 
 .upload-label {
     
-    padding: 15px;
+    padding: 8px 10px;
     width: 100%;
     background-color: red;
-    color: white;
+    color: white !important;
     border-radius: 8px;
     margin-bottom: 25px;
 }
@@ -423,3 +487,196 @@ input[type = "file"]{
 table {
     margin: 15px 0 ;
 }
+
+
+
+@media (max-width: 820px) {
+    body {
+        display: flex;
+        flex-direction: column;
+        
+    }
+    .container {
+        
+        padding: 0;
+        margin: 0 10px;
+        
+    }
+
+    header{
+        
+        height: 8vh;
+        width: 100%;
+        display: inline-flex;
+        position: relative;
+        margin-bottom: 20px;
+        
+    }
+
+    .header-item {
+        margin: 5px 12px;
+        
+    }
+
+    .header-items {
+        flex-direction: row;
+       margin: auto 5px;
+       
+        
+        
+    }
+    .admin-panel {
+
+        display: none;
+
+
+    }
+
+    .admin-header {
+        justify-content: space-between;
+       
+    }
+
+    .admin-projects-input  {
+        width: 100vw;
+    }
+
+    .row-title {
+        width: 60%;
+        
+    }
+
+    table tr td  {
+    padding: 10px;
+    }
+
+    .button-add a,
+    .edit-btn,
+    .delete-btn {
+        padding: 8px 10px;
+}
+
+    .btns-td {
+        width: 5vw;
+    }
+    table {
+        table-layout: 50% 25% 25%;
+        
+    }
+
+    .admin-projects-input{
+        width: 100% ;
+        margin-bottom: 10px;
+       
+        
+        
+        
+    
+    }
+
+    .form-wrapper-admin {
+       max-width: 100%;
+       padding: 10px;
+      
+       
+       
+       
+        
+        
+    }
+
+    .row-2 {
+        flex-direction: column ;
+        
+       
+    }
+
+    .label-input {
+        width: 100%;
+       
+    }
+    
+    input[type = "text"] {
+        width:100%;
+        justify-content: left;
+    }
+
+  .select-wrap {
+    width: 50%;
+  }
+
+  .select-wrap::after  {
+    font-size: 10px;
+  }
+
+  .upload-label,
+  input[type = "submit"] {
+    padding: 10px;
+  }
+
+  
+ 
+
+} 
+
+
+@media (min-width:801px) and (max-width:1277px) {
+    .admin-projects-input {
+       width: 80vw;
+    }
+
+    .select-wrap {
+    width: 50%;
+    padding-right: 5px;
+  }
+
+  .row-2 {
+    flex-direction: column;
+  }
+
+   .label-input {
+       width:  100%;
+       
+    }
+
+      input[type = "text"] {
+        width:100%;
+        justify-content: left;
+    }
+
+     table {
+        table-layout: 70% 15%  15%;
+        
+    }
+
+
+     .button-add a,
+    .edit-btn,
+    .delete-btn {
+        padding: 8px 10px;
+}
+
+    .btns-td {
+        width: 3vw;
+    }
+
+    .dashboard-table {
+        width: 60vw;
+    }
+
+    .row-title {
+        width: 100%;
+        
+    }
+
+    table tr td  {
+    padding: 10px;
+    }
+
+}
+
+
+
+
+
+

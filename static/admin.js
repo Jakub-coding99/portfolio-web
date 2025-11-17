@@ -198,6 +198,15 @@ const chooseDeleteIMG = () => {
 
 
 chooseDeleteIMG()
-        
+     
+
+// if(document.querySelectorAll(".label-input.edit-label")) {
+//     const labelINput = document.querySelectorAll(".label-input.edit-label")
+//     if (labelINput.length == 1) {
+//         const label = labelINput[0]
+//         label.style.justifyContent =  "left"
+//     }
+
+// }
         
 
