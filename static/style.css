@@ -135,9 +135,12 @@ h1 {
     font-family: var(--font-header);
     font-size: 2.6rem;
     font-weight: 800;
+    
 }
+.header-title {
+    text-transform: uppercase;
 
-
+}
 
 header {
 
@@ -552,7 +555,7 @@ footer,
 
 
 .skill-section  {
-    height: 110vh;
+    height: 80vh;
     position: relative;
     overflow: hidden;
    
@@ -603,7 +606,7 @@ footer,
 
 .project {
     
-    height: 70vh;
+    height: 60vh;
     display: grid;
     grid-template-rows: 50% 10% 30% 10%;
     grid-template-columns: 1fr;
@@ -712,6 +715,10 @@ footer,
     background-color: red;
     height: 60vh
 }
+.project-img-preview img:hover,
+.all-images img:hover{
+    cursor: pointer;
+}
 
 .modal {
     display: none;
@@ -800,7 +807,7 @@ footer,
 }
 
 .modal-img img {
-    width: 90vw;
+    width: 100%;
     height: 100%;
     object-fit: contain;
 }
@@ -1473,6 +1480,7 @@ footer  ul a {
 
 .conc-link {
     margin-bottom: 50px;
+    margin-left: 0;
 }
 
   .nav-item {

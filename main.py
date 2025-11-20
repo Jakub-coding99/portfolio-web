@@ -237,8 +237,10 @@ def all_project():
         project = select(Projects)
         all_projects = session.scalars(project).all()
         for p in all_projects:
+            preview_photo = p.image_url[0].split("/")[2]
+    
             project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
-                              "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint}
+                              "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint,"preview_photo": preview_photo}
             projects.append(project_format)
     return projects
 
@@ -249,8 +251,9 @@ def blog_posts():
         blog = select(Blog)
         all_posts = session.scalars(blog).all()
         for p in all_posts:
+            preview_photo = p.image_url[0].split("/")[2]
             post_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
-                           "preview":p.preview,"markdown":p.markdown,"endpoint": p.endpoint}
+                           "preview":p.preview,"markdown":p.markdown,"endpoint": p.endpoint, "preview_photo": preview_photo}
             posts.append(post_format)
     
     return posts
@@ -366,10 +369,7 @@ def delete_img():
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
     projects = all_project()
-    # delete_img()
-    
-    
-    
+   
     return templates.TemplateResponse("index.html",{"request":request, "projects" : projects})
 
 
@@ -382,10 +382,20 @@ def get_project(request : Request ,id : int):
         
         if p["id"] == id:
             project = p
+            project_photo = [photo.split("/")[2]  for photo in project["img_url"]]
+            project["img_url"] = project_photo
+            
+            
+            
+            
+            
+            
             break
 
     if project is None:
         return HTMLResponse("<p>chyba</p>",status_code=404)
+    
+    
     return templates.TemplateResponse("projects.html", {"request":request, "project" : project})
     
 

@@ -48,8 +48,9 @@
                 <div class="img-preview-wrapper">
                     <div class="project-img-preview"></div>
                         <div class="all-images">
-                            {% for img in project.img_url %}
-                                <img class="project-images" src="../../{{img}}" alt="">
+                            {% for i in project.img_url %}
+                           
+                                <img class="project-images" src="{{ url_for('static', path= 'img/' ~ i) }}" alt="">
                             {% endfor %}
                     
                             
@@ -83,8 +84,9 @@
 {% include 'footer.html' %}
 
 {% block js %}
-<script src="../static/project.js"></script>
-<script src ="../static/main.js"></script>
+
+<script src="{{ url_for('static', path = 'project.js') }}"></script>
+<script src="{{ url_for('static', path = 'main.js') }}"></script>
 {% endblock %}
 
 {% endblock %}

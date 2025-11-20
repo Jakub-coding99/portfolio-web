@@ -21,4 +21,4 @@
 
 {% endblock %}
 
-{% block js %}<script src="../static/main.js"></script>{% endblock %}
+{% block js %}<script src="{{url_for('static', path = 'main.js')}}"></script>{% endblock %}

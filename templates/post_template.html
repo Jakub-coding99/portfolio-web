@@ -13,7 +13,7 @@
         
              <div class="blog-header">
                 <div class="blog-photo">
-                    <img src="../{{post.img_url[0]}}" alt="">
+                    <img src="{{url_for('static', path = 'img/' ~ post.preview_photo)}}" alt="">
                 </div>
                 
                 
@@ -47,7 +47,7 @@
                         
                     <div class="articles">
                         <div class="article-preview">
-                            <a class="article-img" href="{{url_for('get_post', id = prev_post.id)}}"><img src="../{{prev_post.img_url[0]}}" alt=""></a>
+                            <a class="article-img" href="{{url_for('get_post', id = prev_post.id)}}"><img src="{{url_for('static', path = 'img/' ~ prev_post.preview_photo) }}" alt=""></a>
                              <a class="article-title" href="{{url_for('get_post', id = prev_post.id)}}"><p>{{prev_post.title}}</p></a>
 
 
@@ -66,7 +66,7 @@
 
                     <div class="articles">
                         <div class="article-preview">
-                            <a class="article-img" href="{{url_for('get_post', id = next_post.id)}}"><img src="../{{next_post.img_url[0]}}" alt=""></a>
+                            <a class="article-img" href="{{url_for('get_post', id = next_post.id)}}"><img src= "{{url_for('static', path = 'img/' ~ next_post.preview_photo) }}" alt=""></a>
                              <a class="article-title" href="{{url_for('get_post', id = next_post.id)}}"><p>{{next_post.title}}</p></a>
 
 
@@ -92,7 +92,7 @@
 
                     
                         <div class="article-preview">
-                            <a class="article-img" href="{{url_for('get_post', id = next_post.id)}}"><img src="../{{next_post.img_url[0]}}" alt=""></a>
+                            <a class="article-img" href="{{url_for('get_post', id = next_post.id)}}"><img src="{{url_for('static', path = 'img/' ~ next_post.preview_photo) }}" alt=""></a>
                              <a class="article-title" href="{{url_for('get_post', id = next_post.id)}}"><p>{{next_post.title}}</p></a>
 
 
@@ -103,7 +103,7 @@
                     
                         
                         <div class="article-preview">
-                            <a class="article-img" href="{{url_for('get_post', id = prev_post.id)}}"> <img src="../{{prev_post.img_url[0]}}" alt=""></a>
+                            <a class="article-img" href="{{url_for('get_post', id = prev_post.id)}}"> <img src="{{url_for('static', path = 'img/' ~ prev_post.preview_photo) }}" alt=""></a>
                            
                              <a class="article-title" href="{{url_for('get_post', id = prev_post.id)}}"><p>{{prev_post.title}}</p></a>
 
@@ -130,7 +130,7 @@
 
 {% include 'footer.html' %} 
 
-{% block js %}<script src="../static/main.js"></script>{% endblock %}
+{% block js %}<script src="{{url_for('static', path = 'main.js')}}"></script>{% endblock %}
 
 {% endblock %}
 
