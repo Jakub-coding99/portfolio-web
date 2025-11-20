@@ -1,15 +1,19 @@
  let img_list = []
 const sendIMG = async(url,formData) => {
+       
         const response = await fetch(url, {
         "method":"POST",
         "body": formData,
+
     
     
     })
+    console.log(response)
+    
 
- const data = await response.json(); // <-- tady parsuješ JSON z Pythonu
+ const data = await response.json();
 if (data.redirect) {
-    window.location.href = data.redirect; // redirect funguje
+    window.location.href = data.redirect;
 }
 
 
@@ -50,7 +54,7 @@ let renderPreview = () => {
         files.forEach((file,index) => {
             if (document.querySelector(".preview-wrapper"))
             {
-                console.log("element existuje")
+               
             }
             
            
@@ -114,11 +118,26 @@ form.addEventListener("submit", async (event) => {
     
     const formData = new FormData();
     formData.append("title", event.target.title.value);
-    formData.append("preview", event.target.preview.value);
+    
+    try {   
+        if(event.target.preview.value) {
+        formData.append("preview", event.target.preview.value)
+
+            }
+
+        }
+    catch (TypeError) {
+        
+
+    }
+
+      
+    
     formData.append("description", event.target.description.value);
 
     // přidáme všechny soubory
     files.forEach(file => formData.append("files", file));
+    
    
     let endpoint = ""
     try {
@@ -141,7 +160,7 @@ form.addEventListener("submit", async (event) => {
         endpoint = form.dataset.endpoint
         
     }
-   console.log(img_list)
+   
     
     if(img_list.length > 0){
         await deleteImage(img_list, event.target.title.value,endpoint);
@@ -183,7 +202,6 @@ const chooseDeleteIMG = () => {
         a.addEventListener("click", (event) => {
             let childs = img.children
             let childImg = childs[1].currentSrc
-            console.log(childImg)
             img_list.push(childImg)
             img.style.display = "none"
            
@@ -210,3 +228,18 @@ chooseDeleteIMG()
 // }
         
 
+const model = document.querySelector("select")
+model.addEventListener("change", (e) => {
+    const value = e.target.value
+    const prevInput = document.querySelector(".preview-input")
+    if (value === "Blog") {
+        
+        prevInput.style.opacity = "0"}
+       
+    
+     if (value === "Project") {
+      
+        prevInput.style.opacity = "1"}
+
+
+})

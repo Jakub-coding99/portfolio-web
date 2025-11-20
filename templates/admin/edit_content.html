@@ -35,6 +35,10 @@
                 <input type="text" value="{{project.title}}" name="title">
             </div>
 
+     
+
+          
+
             {% if project.endpoint != "blog" %}
 
             <div class="label-input  ">
@@ -42,7 +46,8 @@
                <input type="text"  id="" value="{{project.preview}}" name="preview">
             </div>
 
-            {% endif %}
+            {% endif %} 
+
 
           
         </div>
@@ -67,7 +72,7 @@
                             {% for img in project.image_url  %}
                                 <div class="preview-wrapper">
                                         <p class="img-descr">{{img.name}}</p>
-                                    <img src="../../{{img.path}}" class="img-preview" alt="">
+                                    <img src="{{url_for('static', path =  'img/' ~ img.name)}}" class="img-preview" alt="">
                                     
                                         <a href="#" class="close-btn-img">X</a>
                                 
@@ -100,4 +105,4 @@
 
 {% endblock %}
 
-{% block  js%}<script src="../../static/admin.js"></script>{% endblock %}
+{% block  js%}<script src="{{url_for('static', path =  'admin.js')}}"></script>{% endblock %}

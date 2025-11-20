@@ -1,5 +1,5 @@
-let navMenu = document.querySelector(".nav-menu")
-let hamburger = document.querySelector(".hamburger")
+const navMenu = document.querySelector(".nav-menu")
+const hamburger = document.querySelector(".hamburger")
 
 hamburger.addEventListener("click",() => {
     hamburger.classList.toggle("active")
@@ -196,8 +196,8 @@ let animateFunc = () => {
 animateFunc()
 
 
-
-const contactForm = document.querySelector("#form-contact")
+if (document.querySelector("#form-contact")) {
+   const contactForm = document.querySelector("#form-contact")
 contactForm.addEventListener("submit",async (e) => {
     const toast = document.querySelector(".toast")
     toast.classList.remove("activated")
@@ -233,3 +233,5 @@ contactForm.addEventListener("submit",async (e) => {
 
 
 })
+
+}

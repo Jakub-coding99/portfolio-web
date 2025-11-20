@@ -7,7 +7,7 @@ from typing import Annotated
 from passlib.context import CryptContext
 from database import Projects, Admin,Blog,create_db_and_tables,engine,Session,select
 import os
-from typing import List
+from typing import List, Optional
 from fastapi.responses import RedirectResponse
 from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from dotenv import load_dotenv,find_dotenv
@@ -86,7 +86,7 @@ def add_content(request : Request,admin=Depends(get_admin),model_type= str):
 @app.post("/add/{model_type}",response_class = HTMLResponse,)
 
 async def add_project(request : Request,title:str = Form(...),description:str = Form(...),files: List[UploadFile] = File(None),
-                      preview:str = Form(...),admin=Depends(get_admin),model_type= str):
+                      preview:Optional[str] = Form(None),admin=Depends(get_admin),model_type= str):
     config= MODEL.get(model_type)
     model = config["model"]
     img_path = []
@@ -108,6 +108,8 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     html_text = markdown.markdown(description)
     markdown_text = description
     
+    if preview == None:
+        preview = ""
     new_model = model(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
         session.add(new_model)
@@ -175,10 +177,12 @@ def get_edit_content(request:Request,id:int,model_type = str):
 
 
 @app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
-async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None),model_type = str):
+async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str]=Form(None),files: List[UploadFile] = File(None),model_type = str):
     config = MODEL.get(model_type)
-    model = config["model"]
+
     
+    
+    model = config["model"]
     markdown_text = description
     with Session(engine) as session:
         choosen_model = session.get(model,id)
@@ -193,8 +197,9 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
             choosen_model.description = new_description
             choosen_model.markdown = markdown_text
         
-        if choosen_model.preview != preview:
-            choosen_model.preview = preview
+        if preview is not None:
+            if choosen_model.preview != preview:
+                choosen_model.preview = preview
         
         try:
             await upload_img(files,choosen_model,None)
@@ -237,7 +242,10 @@ def all_project():
         project = select(Projects)
         all_projects = session.scalars(project).all()
         for p in all_projects:
-            preview_photo = p.image_url[0].split("/")[2]
+            if len(p.image_url) > 0:
+                preview_photo = p.image_url[0].split("/")[2]
+            else:
+                continue
     
             project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
                               "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint,"preview_photo": preview_photo}
@@ -251,7 +259,13 @@ def blog_posts():
         blog = select(Blog)
         all_posts = session.scalars(blog).all()
         for p in all_posts:
-            preview_photo = p.image_url[0].split("/")[2]
+
+            if len(p.image_url) > 0:
+                preview_photo = p.image_url[0].split("/")[2]
+            else:
+                continue
+
+
             post_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
                            "preview":p.preview,"markdown":p.markdown,"endpoint": p.endpoint, "preview_photo": preview_photo}
             posts.append(post_format)
@@ -439,7 +453,13 @@ def get_post(request : Request ,id : int):
     print(index)
     print(len(all_posts))
 
-    if index == 0:
+    if len(all_posts) == 1:
+        next = None
+        prev = None
+       
+
+
+    elif index == 0:
         prev = all_posts[index + 1]
         next = None
 

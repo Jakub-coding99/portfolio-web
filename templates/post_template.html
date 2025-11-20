@@ -26,10 +26,15 @@
             <div class="blog-content">
 
                 {{post.description | safe }}
+               
+
+
             </div>
 
             <div class="post-line"></div>
+            
             <div class="next-posts">
+
                 
                 {% if next_post == None and prev_post == None %}
 
@@ -130,7 +135,7 @@
 
 {% include 'footer.html' %} 
 
-{% block js %}<script src="{{url_for('static', path = 'main.js')}}"></script>{% endblock %}
+{% block js %}<script src="{{url_for('static', path =  'main.js')}}"></script>{% endblock %}
 
 {% endblock %}
 

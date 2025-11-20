@@ -31,7 +31,7 @@
                 <input type="text" name="title" id="title" placeholder="Zadej název">
             </div>
 
-            <div class="label-input">
+            <div class="label-input preview-input">
                 <label for="preview">Text náhledu</label>
                 <input type="text" name="preview" id="preview" placeholder="Text náhledu">
             </div>
@@ -41,7 +41,7 @@
                 <div class="select-wrap">
                     <select name="model" id="model">
                         <option value="Project">Projekty</option>
-                        <option value="Blog">Blog</option>
+                        <option class="blog-btn" value="Blog">Blog</option>
                     </select>
                 </div>
             </div>
@@ -96,6 +96,6 @@
 
 {% endblock %}
 
-{% block  js%}<script src="../../static/admin.js"></script>{% endblock %}
+{% block  js%}<script src="{{url_for('static', path =  'admin.js')}}"></script>{% endblock %}
 
 
