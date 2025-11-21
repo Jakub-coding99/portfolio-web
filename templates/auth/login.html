@@ -1,22 +1,20 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-</head>
-<body>
-    <form action="{{url_for('log_on')}}" method="post" enctype="multipart/form-data">
+{% extends "base.html" %}
+{% block title %}Login{% endblock %}
+
+{% block extra_css %}<link rel="stylesheet" href="{{url_for('static', path = '/login.css')}}">{% endblock %}
+
+{% block content %}
+
+
+
+
+    <form action="{{url_for('log_on')}}" method="post" enctype="multipart/form-data" id="login-form">
         <input type="text" name="username" placeholder="name">
         <input type="text" name="password" placeholder="password">
         <input type="submit">
     </form>
-    
 
 
-
-    <script src="../static/login.js"></script>
-
-</body>
+{% endblock %}
 
 </html>

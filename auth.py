@@ -3,15 +3,17 @@ from typing import Annotated
 from fastapi.requests import Request
 from fastapi.responses import HTMLResponse,RedirectResponse
 import jwt
-from fastapi import Depends, FastAPI, HTTPException, status,Form,requests,Response
+from fastapi import Depends, FastAPI, HTTPException, status,Form,requests,Response,APIRouter
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from jwt.exceptions import InvalidTokenError
 from pwdlib import PasswordHash
 from pydantic import BaseModel
-from fastapi.templating import Jinja2Templates
-from fastapi.staticfiles import StaticFiles
-from database import Admin
 
+
+from database import Admin,Session,select,engine
+from fastapi.security import HTTPBasic, HTTPBasicCredentials
+from passlib.context import CryptContext
+from core.core import templates
 # to get a string like this run:
 # openssl rand -hex 32
 SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
@@ -19,9 +21,22 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
 
-
-
-
+fake_users_db = {
+    "johndoe": {
+        "username": "johndoe",
+        "full_name": "John Doe",
+        "email": "johndoe@example.com",
+        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$jvHcX3SYRUjgoMdmjY+YfQ$+eUf57MV30BKmowJGRPpd4NkwOmRtduYghvu1IQPZss",
+        "disabled": False,
+    },
+    "alice": {
+        "username": "alice",
+        "full_name": "Alice Chains",
+        "email": "alicechains@example.com",
+        "hashed_password": "$argon2id$v=19$m=65536,t=3,p=4$g2/AV1zwopqUntPKJavBFw$BwpRGDCyUHLvHICnwijyX8ROGoiUPwNKZ7915MeYfCE",
+        "disabled": True,
+    },
+}
 
 class UserLog(BaseModel):
     username : str
@@ -51,20 +66,17 @@ password_hash = PasswordHash.recommended()
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="log")
 
-app = FastAPI()
-
-
-app.mount("/static",StaticFiles(directory="static"),name="static")
-templates = Jinja2Templates(directory="auth/templates")
+router = APIRouter(prefix="/auth")
 
 
 
-@app.get("/",response_class=HTMLResponse)
-def home(request:Request):
-    return templates.TemplateResponse("auth/index.html",{"request":request})
+
+# @router.get("/",response_class=HTMLResponse)
+# def home(request:Request):
+#     return templates.TemplateResponse("auth/index.html",{"request":request})
 
 
-@app.post("/test_url",response_class=HTMLResponse)
+@router.post("/test_url",response_class=HTMLResponse)
 async def js_test(request:Request):
     data = await request.json()
     print(data)
@@ -72,7 +84,7 @@ async def js_test(request:Request):
 def token_to_js(token):
     return token
 
-@app.post("/new_token" ,response_class=HTMLResponse)
+@router.post("/new_token" ,response_class=HTMLResponse)
 def send_token(request:Request):
     new_token = token_to_js()
     print(new_token + "nový")
@@ -149,11 +161,11 @@ async def get_current_active_user(
         raise HTTPException(status_code=400, detail="Inactive user")
     return current_user
 
-@app.get("/log", response_class=HTMLResponse)
+@router.get("/log", response_class=HTMLResponse)
 def log_on(request: Request):
-    return templates.TemplateResponse("login.html",{"request": request})
+    return templates.TemplateResponse("auth/login.html",{"request": request})
 
-@app.post("/log")
+@router.post("/log")
 async def log_on(form_data: Annotated[OAuth2PasswordRequestForm,Depends()])->Token:
     user = authenticate_user(fake_users_db, form_data.username, form_data.password)
     if not user:
@@ -168,16 +180,18 @@ async def log_on(form_data: Annotated[OAuth2PasswordRequestForm,Depends()])->Tok
     #     data={"sub": user.username}, expires_delta=access_token_expires
     token = create_access_token(data={"sub": user.username})
 
-    response = RedirectResponse("/dashboard",302)
+    response = RedirectResponse("/auth/dashboard",302)
     response.set_cookie(key = "access_token",value= token, expires=ACCESS_TOKEN_EXPIRE_MINUTES,httponly=True,secure=True,samesite="lax")
+    print(response.status_code)
     return response
     
-@app.get("/dashboard",response_class=HTMLResponse)
+@router.get("/dashboard",response_class=HTMLResponse)
 def dash(request:Request):
     token = request.cookies.get("access_token")
+   
     
     if not token:
-        return RedirectResponse("/log",302)
+        return RedirectResponse("/auth/log",302)
        
     try:
         
@@ -187,11 +201,11 @@ def dash(request:Request):
    
         return RedirectResponse("/log",302)
     
-    return templates.TemplateResponse("dashboard.html", {"request":request,"username":username})
+    return templates.TemplateResponse("auth/dashboard.html", {"request":request,"username":username})
 
-@app.get("/logout", response_class=HTMLResponse)
+@router.get("/logout", response_class=HTMLResponse)
 def logout(request : Request):
-    response = RedirectResponse("/log",302)
+    response = RedirectResponse("/auth/log",302)
     response.delete_cookie(key="access_token")
     return response
     

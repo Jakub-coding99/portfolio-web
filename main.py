@@ -14,6 +14,9 @@ from dotenv import load_dotenv,find_dotenv
 import markdown
 import re
 from itertools import zip_longest
+from auth import router as auth_router
+from core.core import templates
+
 
 
 dotenv_path = find_dotenv()
@@ -45,6 +48,8 @@ MODEL = {
 
 
 app = FastAPI()
+
+app.include_router(auth_router)
 
 security = HTTPBasic()
 
@@ -357,7 +362,7 @@ def delete_img():
 
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+
 
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
