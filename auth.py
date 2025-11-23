@@ -51,7 +51,7 @@ def get_user( username: str):
         db = select(Admin).where(Admin.user_name == username)
         user = session.scalar(db)
         if user:
-            print(user)
+            
             return user
     
 
@@ -96,12 +96,29 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
    
     return user
 
+def auth_from_cookie(request:Request):
+    token = request.cookies.get("access_token")
+    if not token:
+        return
+    try:
+        payload = jwt.decode(token,SECRET_KEY,ALGORITHM)
+        username = payload.get("sub")
+        if not username:
+            return None
+        return get_user(username)
+    except:
+        return None
+
+
+
 @router.get("/log", response_class=HTMLResponse)
-def log_on(request: Request):
-    
-    if request.cookies.get("access_token"):
+async def log_on(request: Request):
+    user = auth_from_cookie(request)
+    if user:
+        print("probehl redirect")
         return RedirectResponse("/admin-page", 302)
-    
+      
+
 
     return templates.TemplateResponse("auth/login.html",{"request": request})
 

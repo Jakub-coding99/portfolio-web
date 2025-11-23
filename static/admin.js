@@ -214,32 +214,35 @@ const chooseDeleteIMG = () => {
 }
 
 
-
 chooseDeleteIMG()
      
 
-// if(document.querySelectorAll(".label-input.edit-label")) {
-//     const labelINput = document.querySelectorAll(".label-input.edit-label")
-//     if (labelINput.length == 1) {
-//         const label = labelINput[0]
-//         label.style.justifyContent =  "left"
-//     }
-
-// }
         
 
 const model = document.querySelector("select")
 model.addEventListener("change", (e) => {
     const value = e.target.value
     const prevInput = document.querySelector(".preview-input")
+    const input = prevInput.querySelector("input")
+    const textarea = document.getElementById("add-textarea")
+    console.log(input)
+    
+    
     if (value === "Blog") {
         
         prevInput.style.opacity = "0"}
-       
+        input.disabled = true
+        textarea.value= "#DIV PRO OBRÁZKY > <div class = blog-img-wrapper></div>"
     
+
      if (value === "Project") {
       
-        prevInput.style.opacity = "1"}
+        prevInput.style.opacity = "1"
+        input.disabled = false
+        textarea.value = ""
 
-
-})
+       
+        
+     }
+    }
+)

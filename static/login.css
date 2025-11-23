@@ -1,3 +1,205 @@
-#login-form  {
-    border: 1px solid brown;
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
 }
+
+html {
+    font-size: 18px;
+}
+
+
+.login-section {
+    background-image: url(img/night.jpg);
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    background-size: cover;
+    background-position: left;
+    
+    
+
+}
+
+.container-login {
+    width: 1250px;
+    background-color: transparent;
+    display: flex;
+    justify-content: center;
+    align-items:  center;
+}
+
+
+
+
+#login-form  {
+    -webkit-appearance: none !important;
+    -moz-appearance:    none !important;
+    appearance:         none !important;
+    outline: none !important;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    width: 20vw;
+    
+
+}
+#login-form input:hover,
+#login-form input:focus,
+#login-form input:active {
+     -webkit-appearance: none !important;
+    -moz-appearance:    none !important;
+    appearance:         none !important;
+    outline: none !important;
+    
+
+}
+
+
+ h2 {
+    text-align: center;
+    margin: 10px 0;
+    font-weight: bold;
+    letter-spacing: 2px;
+
+}
+
+.login-wrap {
+    
+    border: 1px solid rgb(205, 215, 235);
+    padding: 40px 30px;
+    border-radius: 5%;
+    background: transparent;
+    backdrop-filter: blur(10px);
+   
+    ;
+    
+    
+   
+}
+
+
+
+
+
+#login-form input {
+    padding: 15px 10px;
+    margin: 15px;
+    border-radius: 20px;
+    background-color: transparent;
+    font-size: 1rem;
+    font-weight: bold;
+
+
+
+
+}
+#login-form  input:-webkit-autofill,
+#login-form input:-webkit-autofill,
+#login-form  input:-webkit-autofill:hover
+#login-form input:-webkit-autofill:focus {
+   
+    -webkit-text-fill-color:  rgb(197, 203, 255);
+   
+    -webkit-transition-delay: 9999s;
+    transition-delay: 9999s;
+   
+    
+   
+     
+    
+}
+
+
+#login-form input:-webkit-autofill::first-line,
+#login-form input:-webkit-autofill::first-line:hover,
+#login-form input:-webkit-autofill::first-line:active,
+#login-form input:-webkit-autofill::first-line:focus{
+     font-size: 1.05rem;
+     
+}
+
+#login-form input[type = "text"],
+#login-form input[type = "password"] {
+    color: rgb(197, 203, 255);
+    border: 3px solid rgb(215, 216, 230);
+    
+}
+
+#login-form input[type = "text"]::placeholder,
+#login-form input[type = "password"]::placeholder {
+   color: rgb(197, 203, 255);
+   
+}
+
+#login-form input[type = "submit"] {
+    background-color: rgb(192, 199, 225);
+    color: rgb(50, 51, 54);
+    border: none;
+    cursor: pointer;
+
+}
+
+#login-form input[type = "submit"]:hover {
+    background-color: rgb(149, 152, 193);
+}
+
+@media (max-width: 650px) {
+    .container-login {
+        width: 90vw;
+    }
+
+    .login-wrap {
+        width: 100%;
+        padding: 10px 15px;
+    }
+
+    #login-form {
+        width: 100%;
+    }
+
+    #login-form input {
+        margin-right: 0;
+        margin-left: 0;
+    }
+}
+
+
+
+@media (min-width: 651px) and (max-width: 1000px) {
+    #login-form {
+        width: 100%;
+    }
+
+      .container-login {
+        width: 60vw;
+    }
+
+     #login-form input {
+        margin-right: 5px;
+        margin-left: 5px;
+    }
+     .login-wrap {
+        width: 100%;
+        padding: 20px 30px;
+    }
+
+
+
+
+}
+
+@media (min-width: 1001px) and (max-width: 1350px) {
+
+    #login-form {
+        width: 100%;
+    }
+
+      .container-login {
+        width: 100vw;
+    }
+}
+
+
+

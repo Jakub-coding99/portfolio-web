@@ -961,7 +961,7 @@ SKILLS */
 
 .divider {
     width: 100%;
-    height: 20vh;
+    height: 12vh;
     background-color: var(--bg-color-1);
 }
 
@@ -1169,6 +1169,12 @@ textarea,
 
 }
 
+.blog-img-wrapper img {
+    width: 50%;
+    height: 50vh;
+}
+
+
 .blog-item.odd {
     flex-direction: row;
 }
@@ -1269,6 +1275,11 @@ textarea,
     margin: 40px 0;
     background-color: rgb(130, 130, 130);
     height: 2px;
+}
+
+.blog-img-wrapper {
+    display: flex;
+    justify-content: center;
 }
 
 
@@ -1842,6 +1853,7 @@ textarea {
     
    
     width: 100%;
+    margin-top: 20px;
     max-height: 50vh;
     
 }
@@ -2055,10 +2067,15 @@ h1 {
     
    
     width: 100%;
-    max-height: 50vh;
+    height: 90vh;
     
 }
 
+.blog-photo img { 
+     width: 100%;
+     height: 100%;
+    
+}
 
 .blog-content ul {
     margin-left: 15px;
@@ -2073,9 +2090,18 @@ h1 {
   
 }
 
+.blog-img-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center     ;
+   
+}
+
+
 .blog-img-wrapper img {
-    width: 100%;
-    max-height: 70vh;
+    width: 80%;
+    height: 90vh;
+    
 }
 
 

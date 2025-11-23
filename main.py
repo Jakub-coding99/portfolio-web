@@ -1,7 +1,6 @@
 from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse,JSONResponse
-from fastapi.security import HTTPBasic
 from database import Projects,Blog,create_db_and_tables,engine,Session,select
 import os
 from typing import List, Optional
@@ -9,8 +8,6 @@ from fastapi.responses import RedirectResponse
 from fastapi_mail import FastMail, MessageSchema,ConnectionConfig
 from dotenv import load_dotenv,find_dotenv
 import markdown
-import re
-from itertools import zip_longest
 from auth import router as auth_router
 from core.templates import templates
 from core.security import get_current_user_from_cookies
@@ -51,10 +48,9 @@ app = FastAPI()
 app.include_router(auth_router)
 
 
-security = HTTPBasic()
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
-templates = Jinja2Templates(directory="templates")
+
 
 create_db_and_tables()
 
@@ -74,7 +70,7 @@ def add_content(request : Request,admin=Depends(get_current_user_from_cookies),m
 @app.post("/add/{model_type}",response_class = HTMLResponse,)
 async def add_project(request : Request,title:str = Form(...),description:str = Form(...),
                       files: List[UploadFile] = File(None),
-                      preview:str = Form(...),admin=Depends(get_current_user_from_cookies),model_type= str):
+                      preview:Optional[str] = Form(None),admin=Depends(get_current_user_from_cookies),model_type= str):
     
     config= MODEL.get(model_type)
     model = config["model"]
@@ -101,6 +97,7 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
         preview = ""
     new_model = model(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
+        print(new_model)
         session.add(new_model)
         session.commit()
     
@@ -163,7 +160,7 @@ def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get
 
 
 @app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
-async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
+async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str] = Form(None),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
 
     
@@ -214,6 +211,7 @@ async def upload_img(files,choosen_model,img_path):
 
         with open(location_file,"wb") as f:
             content = await file.read()
+           
             f.write(content)
         
 
@@ -230,17 +228,18 @@ def all_project():
         
         for p in all_projects:
            
-            print(len(p.image_url))
+            
             if len(p.image_url) > 0:
                 preview_photo = p.image_url.copy()[0].split("/")[2]
+              
             else:
                 preview_photo = ""
     
             project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
                               "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint,"preview_photo": preview_photo}
-            print(project_format)
+            
             projects.append(project_format)
-           
+             
     return projects
 
 
@@ -252,7 +251,7 @@ def blog_posts():
         for p in all_posts:
 
             if len(p.image_url) > 0:
-                preview_photo = p.image_url[0].split("/")[2]
+                preview_photo = p.image_url.copy()[0].split("/")[2]
             else:
                 continue
 
@@ -263,131 +262,11 @@ def blog_posts():
     
     return posts
 
-def delete_img():
-
-    all_projects = all_project()
-    all_posts = blog_posts()
-   
-    
-    if len(all_projects) == 0 and len(all_posts) ==0:
-        return
-    
-
-    all_content = {
-        "project": []
-
-        ,
-        "blog": []
-        
-    }
-
-    for blog in all_posts:
-        x = {"id" : blog["id"], "markdown":blog["markdown"],"img" : blog["img_url"],"new_imgs": []}
-        all_content["blog"].append(x)
-
-    for project in all_projects:
-        y = {"id" : project["id"], "markdown":project["markdown"],"img" : project["img_url"],"new_imgs": []}
-        all_content["project"].append(y)
-        
-    
-
-    BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-    app_path = os.path.join(BASE_DIR,"static/img")
-    IMAGES = os.listdir(app_path)
-    MY_IMG = ['favicon.ico', 'me.jpg', 'no-img.jpg']
-    for my_img in MY_IMG:
-        IMAGES.remove(my_img)
-    
-    images_in_md = []
-    for (blog,project) in zip_longest(all_content['blog'],all_content['project'],fillvalue=None):
-   
-        blog_text = blog["markdown"] if blog else ""
-        project_text = project["markdown"] if project else ""
-
-
-
-
-
-        regex_blog = re.findall(r"static/img/[^\s)\"']+",blog_text)
-        regex_project = re.findall(r"static/img/[^\s)\"']+",project_text)
-
-
-        
-        if regex_blog or regex_project:
-            b_img = []
-            p_img = []
-            for(b,p) in zip_longest(regex_blog,regex_project,fillvalue=None):
-                
-                if b:
-                    b_img.append(b)
-                    images_in_md.append(b)
-               
-                if p:
-                    p_img.append(p)
-                    images_in_md.append(p)
-                
-            
-            if blog:
-                blog["new_imgs"] = b_img
-            if project:
-                project["new_imgs"] = p_img
-
-    no_none_img = [x for x in images_in_md if x != None]
-
-    images_in_md_splitted = [os.path.basename(i) for i in no_none_img]
-    
-
-    # print(f"toto jsou obrazky nachazejici v markdownu: {images_in_md_splitted}")
-
-    
-    img_to_del = [x for x in IMAGES if x not in images_in_md_splitted]
-    # print(f"toto jsou obrazky, ktere budou smazany: {img_to_del}")
-
-    if len(img_to_del) == 0:
-        return
-    
-    
-    with Session(engine) as session:
-        for blog in all_content["blog"]:
-            if blog["new_imgs"] is not None:
-                db_blog = session.scalar(select(Blog).filter_by(id = blog["id"]))
-                db_blog.image_url = blog["new_imgs"]
-        
-        for project in all_content["project"]:
-            if project["new_imgs"] is not None:
-                db_project = session.scalar(select(Projects).filter_by(id = project["id"]))
-                db_project.image_url = project["new_imgs"]
-     
-        session.commit()
-            
-    for delete in img_to_del:
-        try:
-            os.remove(os.path.join(app_path, delete))
-        
-        except (FileNotFoundError):
-            pass
-            
-
-
-app.mount("/static",StaticFiles(directory="static"), name="static")
-
-
-@app.get("/test", response_class=HTMLResponse)
-def test_fn(request:Request, admin = Depends(get_current_user_from_cookies)):
-    return templates.TemplateResponse("test_file.html",{"request":request})
-    
-
-
-
 
 
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
     projects = all_project()
-    delete_img()
-   
-    
-    
     
     return templates.TemplateResponse("index.html",{"request":request, "projects" : projects})
 
@@ -403,12 +282,6 @@ def get_project(request : Request ,id : int):
             project = p
             project_photo = [photo.split("/")[2]  for photo in project["img_url"]]
             project["img_url"] = project_photo
-            
-            
-            
-            
-            
-            
             break
 
     if project is None:
@@ -451,8 +324,7 @@ def get_post(request : Request ,id : int):
     next = {}
 
     index = all_posts.index(p)
-    print(index)
-    print(len(all_posts))
+    
 
     if len(all_posts) == 1:
         next = None

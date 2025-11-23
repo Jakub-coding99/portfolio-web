@@ -5,16 +5,32 @@
 
 {% block content %}
 
+<div class="login-section">
+    <div class="container-login">
+        <div class="login-wrap">
+           
+
+            
+            <h2>LOGIN</h2>
+            <form action="{{url_for('log_on')}}" method="post" enctype="multipart/form-data" id="login-form">
+                    <input type="text" name="username" placeholder="Name">
+                    <input type="password" name="password" placeholder="Password" autocomplete="off">
+                    <input type="submit" value="Login">
+            </form>
+    
+
+
+            </div>
+    </div>
+
+</div>
+
+   
 
 
 
-    <form action="{{url_for('log_on')}}" method="post" enctype="multipart/form-data" id="login-form">
-        <input type="text" name="username" placeholder="name">
-        <input type="text" name="password" placeholder="password">
-        <input type="submit">
-    </form>
+    
 
 
 {% endblock %}
 
-</html>
