@@ -241,15 +241,20 @@ def all_project():
     with Session(engine) as session:
         project = select(Projects)
         all_projects = session.scalars(project).all()
+        
         for p in all_projects:
+           
+            print(len(p.image_url))
             if len(p.image_url) > 0:
-                preview_photo = p.image_url[0].split("/")[2]
+                preview_photo = p.image_url.copy()[0].split("/")[2]
             else:
-                continue
+                preview_photo = ""
     
             project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
                               "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint,"preview_photo": preview_photo}
+            print(project_format)
             projects.append(project_format)
+           
     return projects
 
 
