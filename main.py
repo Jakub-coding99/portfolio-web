@@ -1,11 +1,8 @@
-from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException, status
+from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from fastapi.responses import HTMLResponse,JSONResponse
-from fastapi.security import HTTPBasic, HTTPBasicCredentials
-from typing import Annotated
-from passlib.context import CryptContext
-from database import Projects, Admin,Blog,create_db_and_tables,engine,Session,select
+from fastapi.security import HTTPBasic
+from database import Projects,Blog,create_db_and_tables,engine,Session,select
 import os
 from typing import List, Optional
 from fastapi.responses import RedirectResponse
@@ -14,6 +11,9 @@ from dotenv import load_dotenv,find_dotenv
 import markdown
 import re
 from itertools import zip_longest
+from auth import router as auth_router
+from core.templates import templates
+from core.security import get_current_user_from_cookies
 
 
 #UPRAVIT DELETE IMG FUNCTION A CHECK_IMG PRO PROJECT I BLOG
@@ -31,7 +31,7 @@ MODEL = {
         "model" : Projects,
         "template_edit" : "admin/edit_content.html",
         "template_add" : "admin/add_project.html",
-        "redirect" : ADMIN_URL,
+        "redirect" : ADMIN_PAGE_URL,
         "model_type" : "project"
         
 
@@ -48,6 +48,9 @@ MODEL = {
 
 app = FastAPI()
 
+app.include_router(auth_router)
+
+
 security = HTTPBasic()
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
@@ -55,38 +58,24 @@ templates = Jinja2Templates(directory="templates")
 
 create_db_and_tables()
 
-@app.get(ADMIN_URL,response_class = HTMLResponse)
-def get_admin(credentials : Annotated[HTTPBasicCredentials,Depends(security)]):
-        with Session(engine) as session:
-            hasher = CryptContext(schemes=["bcrypt"], deprecated="auto")
-            admin = session.scalars(select(Admin)).first()
-            check_pass = hasher.verify(credentials.password,admin.password)
-
-            if admin.user_name == credentials.username and check_pass:
-                return RedirectResponse(url=ADMIN_PAGE_URL)
-            else:
-        
-                raise HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Unauthorized",
-                headers={"WWW-Authenticate": "Basic"},
-            )
+@app.exception_handler(HTTPException)
+async def custom_exception(request:Request, exc:HTTPException):
+    if exc.status_code == 401:
+        return RedirectResponse("/auth/log", 302)
+    raise exc
 
 
 @app.get("/add-new",response_class = HTMLResponse)
-def add_content(request : Request,admin=Depends(get_admin),model_type= str):
-    
-    
-    
- 
+def add_content(request : Request,admin=Depends(get_current_user_from_cookies),model_type= str):
     return templates.TemplateResponse("admin/add_content.html",{"request":request,"api_url" : ADD_PROJECT_URL})
 
 
 
 @app.post("/add/{model_type}",response_class = HTMLResponse,)
-
-async def add_project(request : Request,title:str = Form(...),description:str = Form(...),files: List[UploadFile] = File(None),
-                      preview:Optional[str] = Form(None),admin=Depends(get_admin),model_type= str):
+async def add_project(request : Request,title:str = Form(...),description:str = Form(...),
+                      files: List[UploadFile] = File(None),
+                      preview:str = Form(...),admin=Depends(get_current_user_from_cookies),model_type= str):
+    
     config= MODEL.get(model_type)
     model = config["model"]
     img_path = []
@@ -120,17 +109,15 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
    
 
 @app.get(ADMIN_PAGE_URL, response_class=HTMLResponse)
-def get_admin_pannel(request : Request,admin=Depends(get_admin)):
+def get_admin_pannel(request : Request,admin=Depends(get_current_user_from_cookies)):
     projects = all_project()
     posts = blog_posts()
     return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects,"posts":posts})
 
 
 @app.get("/delete/{model_type}/{id}",response_class=HTMLResponse)
-def delete_project(request:Request,id : int, model_type = str):
+def delete_project(request:Request,id : int, model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
-   
-
     model = config["model"]
     
     with Session(engine) as session:
@@ -144,8 +131,6 @@ def delete_project(request:Request,id : int, model_type = str):
                     try:
                         
                         to_del = f"{app_path}/{img}"
-                       
-
                         os.remove(to_del)
                     except (FileNotFoundError, PermissionError):
                         
@@ -157,7 +142,8 @@ def delete_project(request:Request,id : int, model_type = str):
     return RedirectResponse(url=ADMIN_PAGE_URL,status_code=303)
 
 @app.get("/edit/{model_type}/{id}",response_class = HTMLResponse)
-def get_edit_content(request:Request,id:int,model_type = str):
+def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get_current_user_from_cookies)):
+
     config = MODEL.get(model_type)
     model = config["model"]
     
@@ -177,7 +163,7 @@ def get_edit_content(request:Request,id:int,model_type = str):
 
 
 @app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
-async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str]=Form(None),files: List[UploadFile] = File(None),model_type = str):
+async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:str=Form(...),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
 
     
@@ -383,12 +369,26 @@ def delete_img():
             
 
 
+app.mount("/static",StaticFiles(directory="static"), name="static")
+
+
+@app.get("/test", response_class=HTMLResponse)
+def test_fn(request:Request, admin = Depends(get_current_user_from_cookies)):
+    return templates.TemplateResponse("test_file.html",{"request":request})
+    
+
+
+
 
 
 @app.get("/", response_class=HTMLResponse)
 def home(request : Request):
     projects = all_project()
+    delete_img()
    
+    
+    
+    
     return templates.TemplateResponse("index.html",{"request":request, "projects" : projects})
 
 
@@ -431,10 +431,6 @@ async def contact(request:Request):
 @app.get("/blog",response_class=HTMLResponse)
 def blog(request:Request):
     posts = blog_posts()
-  
-   
-
-    
     return templates.TemplateResponse("blog.html", {"request":request,"posts":posts})
 
 
