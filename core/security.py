@@ -9,6 +9,8 @@ ALGORITHM = "HS256"
 
 def get_current_user_from_cookies(request : Request):
     token = request.cookies.get("access_token")
+   
+    
 
     if not token:
         raise HTTPException(status_code=401,detail="Not authenticated!")

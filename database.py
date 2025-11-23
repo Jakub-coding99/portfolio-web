@@ -1,6 +1,5 @@
 from typing import List
-
-
+import os
 from sqlmodel import Field, Session, SQLModel, create_engine, select,JSON,Column
 from sqlalchemy.ext.mutable import MutableList
 
@@ -29,7 +28,7 @@ class Admin(SQLModel, table = True):
 
 
 
-sqlite_file_name = "database.db"
+sqlite_file_name = os.getenv("sqlite_file_name")
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}

@@ -114,13 +114,15 @@ def auth_from_cookie(request:Request):
 @router.get("/log", response_class=HTMLResponse)
 async def log_on(request: Request):
     user = auth_from_cookie(request)
-    if user:
+    if not user:
+        return templates.TemplateResponse("auth/login.html",{"request": request})
+    else:
         print("probehl redirect")
         return RedirectResponse("/admin-page", 302)
       
 
 
-    return templates.TemplateResponse("auth/login.html",{"request": request})
+    
 
 @router.post("/log")
 async def log_on(form_data: Annotated[OAuth2PasswordRequestForm,Depends()])->Token:

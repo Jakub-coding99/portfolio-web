@@ -1,7 +1,7 @@
 from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse,JSONResponse
-from database import Projects,Blog,create_db_and_tables,engine,Session,select
+from database import Projects,Blog,create_db_and_tables,engine,Session,select,Admin
 import os
 from typing import List, Optional
 from fastapi.responses import RedirectResponse
@@ -54,6 +54,27 @@ app.mount("/static",StaticFiles(directory="static"), name="static")
 
 create_db_and_tables()
 
+def set_admin():
+    from pwdlib import PasswordHash
+    password_hash = PasswordHash.recommended()
+   
+
+    with Session(engine) as session:
+        admin = session.scalars(select(Admin)).first()
+        if admin:
+            return
+        else:
+            hashed_pass = password_hash.hash(os.getenv("password"))
+            new_admin = Admin(user_name=os.getenv("user_name"), password=hashed_pass)
+            session.add(new_admin)
+            session.commit()
+            
+
+           
+
+set_admin()
+
+
 @app.exception_handler(HTTPException)
 async def custom_exception(request:Request, exc:HTTPException):
     if exc.status_code == 401:
@@ -97,7 +118,7 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
         preview = ""
     new_model = model(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
-        print(new_model)
+        
         session.add(new_model)
         session.commit()
     
