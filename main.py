@@ -13,7 +13,6 @@ from core.templates import templates
 from core.security import get_current_user_from_cookies
 
 
-#UPRAVIT DELETE IMG FUNCTION A CHECK_IMG PRO PROJECT I BLOG
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
@@ -102,7 +101,7 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     if empty_data == True and files == None:
         return JSONResponse({"redirect": ADMIN_PAGE_URL})
     if files == None:
-        fallback_img = "static/img/no-img.jpg"
+        fallback_img = "static/img/no-img.png"
         img_path.append(fallback_img)
         
     
@@ -143,7 +142,7 @@ def delete_project(request:Request,id : int, model_type = str,admin = Depends(ge
         choosen_model = session.get(model,id)
         if choosen_model:
             for img in choosen_model.image_url:
-                if img == "static/img/no-img.jpg":
+                if img == "static/img/no-img.png":
                     continue
                 else:
                     try:
@@ -183,9 +182,7 @@ def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get
 @app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
 async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str] = Form(None),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
-
-    
-    
+    fallback_img = "static/img/no-img.png"
     model = config["model"]
     markdown_text = description
     with Session(engine) as session:
@@ -207,10 +204,18 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
         
         try:
             await upload_img(files,choosen_model,None)
-            
-            
+        
         except TypeError:
             pass
+
+
+        
+        for img in choosen_model.image_url:
+            if len(choosen_model.image_url) > 1 and img == fallback_img:
+                choosen_model.image_url.remove(img)
+
+        if len(choosen_model.image_url) == 0:
+            choosen_model.image_url.append(fallback_img)
 
         session.commit()
         return JSONResponse({"redirect": ADMIN_PAGE_URL})
@@ -246,15 +251,17 @@ def all_project():
     with Session(engine) as session:
         project = select(Projects)
         all_projects = session.scalars(project).all()
+       
         
         for p in all_projects:
-           
             
             if len(p.image_url) > 0:
                 preview_photo = p.image_url.copy()[0].split("/")[2]
               
             else:
                 preview_photo = ""
+            
+           
     
             project_format = {"id" : p.id,"title":p.title.upper(),"description":p.description,"img_url":p.image_url,
                               "preview":p.preview,"markdown":p.markdown,"endpoint":p.endpoint,"preview_photo": preview_photo}
@@ -299,6 +306,7 @@ def get_project(request : Request ,id : int):
     
     for p in all_projects:
         
+        
         if p["id"] == id:
             project = p
             project_photo = [photo.split("/")[2]  for photo in project["img_url"]]
@@ -331,6 +339,7 @@ def blog(request:Request):
 @app.get("/blog/{id}",response_class=HTMLResponse)
 def get_post(request : Request ,id : int):
     all_posts = blog_posts()
+
     
     for p in all_posts:
         
@@ -394,13 +403,15 @@ async def check_img(request : Request):
         for x in response["images"]:
             
             decoded = unquote(x)
-            
+        
             f = decoded.split("/")
             formatted = f[5]
-            
+        
+
+            if formatted == "no-img.png":
+                continue
+
             for content_img in content.image_url:
-                
-                
                 
                 if formatted in content_img:
                     

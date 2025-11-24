@@ -2,6 +2,10 @@ from typing import List
 import os
 from sqlmodel import Field, Session, SQLModel, create_engine, select,JSON,Column
 from sqlalchemy.ext.mutable import MutableList
+from dotenv import load_dotenv,find_dotenv
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
 
 class Projects(SQLModel,table = True):
     id: int | None = Field(default=None, primary_key=True)
@@ -29,6 +33,7 @@ class Admin(SQLModel, table = True):
 
 
 sqlite_file_name = os.getenv("sqlite_file_name")
+
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 connect_args = {"check_same_thread": False}

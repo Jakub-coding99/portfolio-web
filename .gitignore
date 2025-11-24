@@ -1,6 +1,6 @@
 __pycache__
 .env
-database.db
+jakub_vecera_web.db
 /static/img/
 /static/pdf/
 test.py
