@@ -1,7 +1,13 @@
 from fastapi import  HTTPException,Request
 import jwt
+from dotenv import find_dotenv,load_dotenv
+import os 
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 
 

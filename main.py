@@ -11,16 +11,22 @@ import markdown
 from auth import router as auth_router
 from core.templates import templates
 from core.security import get_current_user_from_cookies
+from urllib.parse import unquote
 
 
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
 
-ADMIN_URL = "/user/admin"
-ADD_PROJECT_URL = "/add/{model_type}"
-ADMIN_PAGE_URL = "/admin-page"
-ADMIN_EDIT_PROJECT = "/edit/{model_type}/{id}"
+
+ADD_PROJECT_URL = os.getenv("ADD_PROJECT_URL")
+ADMIN_PAGE_URL =  os.getenv("ADMIN_PAGE_URL")
+ADMIN_EDIT_PROJECT = os.getenv("ADMIN_EDIT_PROJECT")
+LOGIN_URL = os.getenv("LOGIN_URL")
+PREFIX = os.getenv("PREFIX")
+DELETE_CONTENT_URL = os.getenv("DELETE_CONTENT_URL")
+DELETE_IMG = os.getenv("DELETE_IMG")
+
 
 MODEL = {
     "project": {
@@ -77,7 +83,7 @@ set_admin()
 @app.exception_handler(HTTPException)
 async def custom_exception(request:Request, exc:HTTPException):
     if exc.status_code == 401:
-        return RedirectResponse("/auth/log", 302)
+        return RedirectResponse(f"{PREFIX}{LOGIN_URL}", 302)
     raise exc
 
 
@@ -87,7 +93,7 @@ def add_content(request : Request,admin=Depends(get_current_user_from_cookies),m
 
 
 
-@app.post("/add/{model_type}",response_class = HTMLResponse,)
+@app.post(ADD_PROJECT_URL,response_class = HTMLResponse,)
 async def add_project(request : Request,title:str = Form(...),description:str = Form(...),
                       files: List[UploadFile] = File(None),
                       preview:Optional[str] = Form(None),admin=Depends(get_current_user_from_cookies),model_type= str):
@@ -132,7 +138,7 @@ def get_admin_pannel(request : Request,admin=Depends(get_current_user_from_cooki
     return templates.TemplateResponse("admin/admin_main.html", {"request":request,"projects":projects,"posts":posts})
 
 
-@app.get("/delete/{model_type}/{id}",response_class=HTMLResponse)
+@app.get(DELETE_CONTENT_URL,response_class=HTMLResponse)
 def delete_project(request:Request,id : int, model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
     model = config["model"]
@@ -158,7 +164,7 @@ def delete_project(request:Request,id : int, model_type = str,admin = Depends(ge
 
     return RedirectResponse(url=ADMIN_PAGE_URL,status_code=303)
 
-@app.get("/edit/{model_type}/{id}",response_class = HTMLResponse)
+@app.get(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
 def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get_current_user_from_cookies)):
 
     config = MODEL.get(model_type)
@@ -179,7 +185,7 @@ def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get
     return templates.TemplateResponse(config["template_edit"],{"request":request,"project":choosen_model})
 
 
-@app.post("/edit/{model_type}/{id}",response_class = HTMLResponse)
+@app.post(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
 async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str] = Form(None),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
     fallback_img = "static/img/no-img.png"
@@ -384,9 +390,9 @@ def get_post(request : Request ,id : int):
     return templates.TemplateResponse("post_template.html", {"request":request, "post" : post,"next_post":next,"prev_post":prev})
     
 
-@app.post("/delete-img",response_class=HTMLResponse)
+@app.post(DELETE_IMG,response_class=HTMLResponse)
 async def check_img(request : Request):
-    from urllib.parse import unquote
+  
     img_to_del = []
     response = await request.json()
 

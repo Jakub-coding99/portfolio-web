@@ -99,7 +99,7 @@ html {
 #login-form input:-webkit-autofill,
 #login-form  input:-webkit-autofill:hover
 #login-form input:-webkit-autofill:focus {
-   
+   background-color: transparent !important;
     -webkit-text-fill-color:  rgb(197, 203, 255);
    
     -webkit-transition-delay: 9999s;
@@ -117,6 +117,7 @@ html {
 #login-form input:-webkit-autofill::first-line:active,
 #login-form input:-webkit-autofill::first-line:focus{
      font-size: 1.05rem;
+     background-color: transparent !important;
      
 }
 
@@ -124,6 +125,7 @@ html {
 #login-form input[type = "password"] {
     color: rgb(197, 203, 255);
     border: 3px solid rgb(215, 216, 230);
+    background-color: transparent !important;
     
 }
 

@@ -10,15 +10,25 @@ from pwdlib import PasswordHash
 from pydantic import BaseModel
 from database import Admin,Session,select,engine
 from core.templates import templates
+import os
+from dotenv import load_dotenv,find_dotenv
 
 
-# to get a string like this run:
-# openssl rand -hex 32
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
+dotenv_path = find_dotenv()
+load_dotenv(dotenv_path)
+
+
+
+SECRET_KEY = os.getenv("SECRET_KEY")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 3600
+LOGIN_URL = os.getenv("LOGIN_URL")
+ADMIN_URL = os.getenv("ADMIN_PAGE_URL")
+TOKEN_URL = os.getenv("TOKEN_URL")
+LOGOUT_URL = os.getenv("LOGOUT_URL")
+PREFIX = os.getenv("PREFIX")
 
-"johndoe, admin"
+
 
 
 class Token(BaseModel):
@@ -32,9 +42,9 @@ class TokenData(BaseModel):
 
 password_hash = PasswordHash.recommended()
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="log")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl=TOKEN_URL)
 
-router = APIRouter(prefix="/auth")
+router = APIRouter(prefix=PREFIX)
 
 
 def verify_password(plain_password, hashed_password):
@@ -111,20 +121,20 @@ def auth_from_cookie(request:Request):
 
 
 
-@router.get("/log", response_class=HTMLResponse)
+@router.get(LOGIN_URL, response_class=HTMLResponse)
 async def log_on(request: Request):
     user = auth_from_cookie(request)
     if not user:
         return templates.TemplateResponse("auth/login.html",{"request": request})
     else:
-        print("probehl redirect")
-        return RedirectResponse("/admin-page", 302)
+        
+        return RedirectResponse(ADMIN_URL, 302)
       
 
 
     
 
-@router.post("/log")
+@router.post(LOGIN_URL)
 async def log_on(form_data: Annotated[OAuth2PasswordRequestForm,Depends()])->Token:
     user = authenticate_user(form_data.username, form_data.password)
     if not user:
@@ -136,13 +146,13 @@ async def log_on(form_data: Annotated[OAuth2PasswordRequestForm,Depends()])->Tok
     
     token = create_access_token(data={"sub": user.user_name})
     
-    response = RedirectResponse("/admin-page",302)
+    response = RedirectResponse(ADMIN_URL,302)
     response.set_cookie(key = "access_token",value= token, expires=ACCESS_TOKEN_EXPIRE_MINUTES,httponly=True,secure=True,samesite="lax")
     return response
     
 
 
-@router.get("/logout", response_class=HTMLResponse)
+@router.get(LOGOUT_URL, response_class=HTMLResponse)
 def logout(request : Request):
     response = RedirectResponse("/",302)
     response.delete_cookie(key="access_token")
