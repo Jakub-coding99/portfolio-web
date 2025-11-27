@@ -1,7 +1,5 @@
 __pycache__
 .env
 jakub_vecera_web.db
-
-/static/pdf/
 test.py
 venv/
