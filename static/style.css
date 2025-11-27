@@ -591,7 +591,7 @@ footer,
 
 
 .skill-section  {
-    height: 90vh;
+    height: 100vh;
     position: relative;
     overflow: hidden;
    
@@ -1395,7 +1395,7 @@ footer {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 25vh;
+    height: 27vh;
     padding: 25px 0 ;
     flex-direction: column;
 
@@ -1491,7 +1491,6 @@ footer  ul a {
     color: var(--bg-color-2);
     
 }
-
 
 
 
@@ -1661,6 +1660,10 @@ h2 {
 .my-btns {
     padding:  8px;
     font-size: 0.8rem;
+    height: 36px;
+    align-items: center;
+    display: flex;
+    justify-content: center;
 }
 
 .overview {
@@ -1729,7 +1732,7 @@ h2 {
 }
 
 .skill-section   {
-    height: 75vh;
+    height: 90vh;
     
 }
 
@@ -1804,6 +1807,10 @@ h2 {
    
 }
 
+ #cv {
+        height: 36px; 
+        margin-bottom: 25px;
+    }
 .project-btn {
     margin-bottom: 15px;
    
@@ -2199,6 +2206,9 @@ h1 {
     
 }
 
+footer {
+    height: 30vh;
+}
 
 }
 
@@ -2284,14 +2294,16 @@ h1 {
   
 
     .soc-buttons .my-btns,
-    .header-buttons .my-btns
+    .header-buttons .my-btns,
     #cv {
-        width: 10px;
+        max-width: 130px !important;
+      
+        
         
     }
+  
 
-    #cv {
-        padding: 12px;
-    }
+
+   
    
 }
