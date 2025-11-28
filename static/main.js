@@ -1,3 +1,26 @@
+// window.addEventListener("load" , () => {
+    
+
+
+//     const navType = performance.getEntriesByType("navigation")[0].type;
+
+//     if (navType === "reload") {
+       
+//         document.querySelector(".loader").style.display = "none"
+//         return
+//     }
+//     const loaderEl = document.querySelector(".loader")
+//     loaderEl.style.opacity = "0"
+//     loaderEl.style.visibility = "hidden"
+//     loaderEl.addEventListener("transitionend", () => {
+        
+//         document.body.removeChild(loaderEl)
+//     })
+// })
+
+
+
+
 const navMenu = document.querySelector(".nav-menu")
 const hamburger = document.querySelector(".hamburger")
 
