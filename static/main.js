@@ -1,24 +1,3 @@
-// window.addEventListener("load" , () => {
-    
-
-
-//     const navType = performance.getEntriesByType("navigation")[0].type;
-
-//     if (navType === "reload") {
-       
-//         document.querySelector(".loader").style.display = "none"
-//         return
-//     }
-//     const loaderEl = document.querySelector(".loader")
-//     loaderEl.style.opacity = "0"
-//     loaderEl.style.visibility = "hidden"
-//     loaderEl.addEventListener("transitionend", () => {
-        
-//         document.body.removeChild(loaderEl)
-//     })
-// })
-
-
 
 
 const navMenu = document.querySelector(".nav-menu")
@@ -261,3 +240,79 @@ contactForm.addEventListener("submit",async (e) => {
 })
 
 }
+
+const imgRotation =  () => {
+    const myPhoto =document.querySelector(".my-photo") 
+    const note = document.querySelector(".photo-note")
+    let fliped = false
+    note.style.display = "none"
+  
+    myPhoto.addEventListener("mouseenter", () => {
+        myPhoto.classList.add("hovered")
+        fliped = true
+        
+        myPhoto.addEventListener("animationend", () => {
+            note.style.display = "flex"
+
+             
+        },{once:true})
+        
+   
+    
+    if (fliped) {
+        myPhoto.addEventListener("mouseenter", () => {
+            myPhoto.classList.add("back")
+            note.style.display = "none"
+            fliped = false
+            
+           
+            
+
+            
+            myPhoto.addEventListener("animationend", () => {
+                myPhoto.classList.remove("hovered")
+                myPhoto.classList.remove("back")
+                
+                imgRotation()
+
+            },{once:true})
+            
+
+        },{once:true})
+
+        
+    }
+},{once:true})
+ 
+}
+
+
+
+
+
+
+imgRotation()
+
+
+
+
+
+
+
+//  myPhoto.classList.add("hovered")
+//     if(myPhoto.className === "my-photo hovered"){
+//         myPhoto.addEventListener("mouseenter", () =>{
+//             myPhoto.classList.add("back")
+//         })
+    
+//     }
+
+
+
+  // else {
+    //     myPhoto.classList.remove("hovered")
+    //     myPhoto.addEventListener("mouseenter", () =>{
+    //         myPhoto.classList.add("hovered")
+    //     })
+    //     }
+    // }

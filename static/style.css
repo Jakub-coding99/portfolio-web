@@ -620,13 +620,23 @@ footer,
     width: 300px;
     height: 300px;
     overflow: hidden;
-    border: 5px solid var(--bg-color-1);
-    border-radius: 50%
+    border-radius: 50%;
+    box-shadow: 8px 5px 15px rgb(45, 45, 45);
+    position: relative;
+   
+    
     
 }
+.my-photo::before {
+    content: "";
+    background-color: transparent;
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    border-radius: 50%;
+    transition: all ease 0.5s;
 
-
-
+}
 
 
 
@@ -637,12 +647,93 @@ footer,
     height: 100%;
     object-fit: cover;
     object-position: top 80%;
+    position: relative;
+   
+    
+}
+
+.my-photo.hovered {
+   
+   
+   animation: photo-anim ease 2s 1 forwards;
+   box-shadow: 8px 5px 15px rgb(45, 45, 45);
+   position: relative;
+
+   
+
+}
+
+.my-photo.hovered::before {
+    animation: fade-bg 2s ease 1 forwards;
+}
+
+.my-photo.hovered.back:before {
+    animation: fade-bg-off 2s ease 1 forwards;
+}
+
+.my-photo.hovered.back {
+    animation: photo-back ease 2s 1 forwards;
+    box-shadow: 8px 5px 15px rgb(45, 45, 45);
+   
+}
+
+@keyframes fade-bg-off {
+    0% {background-color: rgba(0, 0, 0, 0.5);}
+    50% {background-color: rgba(0, 0, 0, 0.3)}
+    100% { background-color: rgba(0, 0, 0, 0.0)}
 }
 
 
 
 
+@keyframes fade-bg {
+    0% {background-color: rgba(0, 0, 0, 0);}
+    50% {background-color: rgba(0, 0, 0, 0.3)}
+    100% { background-color: rgba(0, 0, 0, 0.5)}
+}
 
+
+
+@keyframes photo-back {
+    0% {transform: rotateY(-180deg)}
+    33% {filter: blur(6px);}
+    100% {transform: rotateY(0)}
+}
+
+
+@keyframes photo-anim {
+    0% {transform: rotateY(0);filter: blur(0px);}
+    33% {filter: blur(6px);}
+    100% {transform: rotateY(180deg);}
+
+} 
+
+.photo-note {
+    display: none;
+    position: absolute;
+    z-index: 2;
+     bottom: 30%;
+    left: 50%;
+    transform: translateX(-50%) rotateY(180deg);
+    color: rgb(255, 255, 255);
+    width: 50%;
+    margin: 0 auto;
+    background-color: rgb(30, 30, 30);
+    padding: 10px 5px;
+    text-align: center;
+    font-size: 1rem;
+    border-radius: 10px;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    
+    
+
+}
+
+.note-child-2 {
+    margin-left: 15%;
+}
 
 .skill-section  {
     height: 100vh;
