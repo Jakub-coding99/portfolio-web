@@ -3,6 +3,7 @@ import os
 from sqlmodel import Field, Session, SQLModel, create_engine,JSON,Column,select
 from sqlalchemy.ext.mutable import MutableList
 from dotenv import load_dotenv,find_dotenv
+from sqlalchemy.ext.asyncio import create_async_engine
 
 dotenv_path = find_dotenv()
 load_dotenv(dotenv_path)
@@ -36,8 +37,8 @@ class Admin(SQLModel, table = True):
 
 sqlite_url = os.getenv("DB_URL")
 
-connect_args = {"check_same_thread": False}
-engine = create_engine(sqlite_url, connect_args=connect_args)
+
+engine = create_async_engine(sqlite_url, echo=True)
 
 
 def create_db_and_tables():
