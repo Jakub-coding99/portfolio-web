@@ -1579,7 +1579,6 @@ footer {
     justify-content: center;
     background-color: var(--bg-color-1);
     color: var(--bg-color-2);
-    
     width: 80vw;
     flex-direction: column;
     
@@ -1603,17 +1602,21 @@ footer {
     
     height: 40px;
     border-radius: 50%;
-    margin: 20px 20px;
+    margin: 20px 20px ; 
     
 }
 
 
-.footer-a {
+.footer-a ul{
     display: flex;
     flex-direction: row;
     justify-content: center;
     text-transform: uppercase;
     
+}
+
+.footer-a ul li {
+   list-style:none;
 }
 
 .footer-a a {
@@ -1623,7 +1626,6 @@ footer {
 
     
 }
-
 
 
 footer  ul a {
@@ -2176,22 +2178,37 @@ textarea {
 }
 
 
-
+.footer-divider {
+    margin: 0;
+    padding: 0;
+}
 
 
 footer {
-    height: 45vh;
-    padding: 10px 0 ;
+    height: 40vh;
+    padding:  0 ;
+    font-size: 15px;
 }
 
 
 .my-footer {
     padding: 0;
+    margin: 0;
+    height: 100%;
+    
+    
 }
 
+.footer-a a {
+    margin: 7px;
+   }
+   
 
-.footer-a ul a {
+
+.footer-a ul  {
     display: block;
+    
+   
 }
 
 .footer-icons svg {
@@ -2204,7 +2221,7 @@ footer {
 }
 
 .footer-icons {
-    margin-top: 10px; 
+    margin-top: 0px; 
     margin-right: 20px;
   
     
@@ -2216,10 +2233,24 @@ footer {
     flex-direction: column;
     align-items: center;
     margin: 5px ;
+    justify-content: center;
     
    
+
 }
 
+.footer-a ul li{
+    display: flex;
+    justify-content: center;
+}
+
+.footer-2part {
+    height: 15%
+}
+.author {
+   margin: 0;
+    padding: 10px 0 ;
+}
 
 
 }
@@ -2497,9 +2528,41 @@ footer {
         
         
     }
+
+    footer {
+        max-height: 80vh;
+        height: 100%;
+        font-size: 13px;
+    }
+
+    .footer-icons {
+        padding-top: 10px;
+    }
   
 
+    .footer-divider {
+        margin:  0 ;
+    }
 
+    .arrow {
+        bottom: 40px;
+    }
+
+   .author {
+    padding: 0 ;
+    margin: 8px 0 ;
+   }
+
+   .footer-2part {
+    height: 10%;
+   }
+
+   .footer-a a {
+    margin: 10px 0 ;
+    padding: 5px;
+   }
    
    
 }
+
+
