@@ -37,6 +37,9 @@ class Admin(SQLModel, table = True):
 DATABASE_URL = os.getenv("DB_URL")
 
 
+
+
+
 engine = create_engine(DATABASE_URL,
                         echo=True,
                         max_overflow=10,

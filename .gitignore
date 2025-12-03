@@ -3,4 +3,4 @@ __pycache__
 jakub_vecera_web.db
 test.py
 venv/
-/static/img
+static/img
