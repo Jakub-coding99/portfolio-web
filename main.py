@@ -124,7 +124,7 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
            
         else:
 
-            target_dir = "/media/photos/"
+            target_dir = "/media/photos"
             os.makedirs(target_dir, exist_ok=True) 
             source = "static/my-img/no-img.png"
             destination = os.path.join(target_dir, "no-img.png")
@@ -253,7 +253,7 @@ async def upload_img(files,choosen_model,img_path):
     os.makedirs(DIR,exist_ok=True)
     for file in files:
        
-        DIR = "/media/photos/"
+        DIR = "/media/photos"
     
         location_file = os.path.join(DIR,file.filename)
         
