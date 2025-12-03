@@ -54,15 +54,13 @@ app = FastAPI()
 app.include_router(auth_router)
 
 
-
 PERSISTENT_DIR = "/mnt/data"
+MEDIA_DIR = os.path.join(PERSISTENT_DIR, "media")
+PHOTOS_DIR = os.path.join(MEDIA_DIR, "photos")
 
-RENDER_DISC = os.path.join(PERSISTENT_DIR,"media","photos")
+os.makedirs(PHOTOS_DIR, exist_ok=True)
 
-os.makedirs(RENDER_DISC,exist_ok=True)
-
-app.mount("/media",StaticFiles(directory=os.path.join(PERSISTENT_DIR,"media")), name="media")
-
+app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
 app.mount("/static",StaticFiles(directory="static"), name="static")
 
 
