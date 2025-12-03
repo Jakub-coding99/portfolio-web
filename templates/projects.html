@@ -45,7 +45,7 @@
                         <div class="all-images">
                             {% for i in project.img_url %}
                            
-                                <img class="project-images" src="{{ url_for('static', path= 'img/' ~ i) }}" alt="">
+                                <img class="project-images" src="{{ url_for('media', path= 'photos/' ~ i) }}" alt="">
                             {% endfor %}
                     
                             

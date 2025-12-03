@@ -23,7 +23,7 @@
                 
                 <div class="blog-item {% if loop.index is even %}even{% else %}odd{% endif %}">
                     <div class="post-img">
-                         <img src="{{url_for('static', path = 'img/' ~ post.preview_photo)}}" alt="">
+                         <img src="{{url_for('media', path = 'photos/' ~ post.preview_photo)}}" alt="">
 
                     </div>
 
