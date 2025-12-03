@@ -12,6 +12,7 @@ from auth import router as auth_router
 from core.templates import templates
 from core.security import get_current_user_from_cookies
 from urllib.parse import unquote
+import shutil
 
 #TEST
 
@@ -107,11 +108,17 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     if empty_data == True and files == None:
         return JSONResponse({"redirect": ADMIN_PAGE_URL})
     if files == None:
-        fallback_img = "static/my-img/no-img.png"
-        img_path.append(fallback_img)
-        print(img_path)
         
-    
+        target_dir = "static/img/"
+        os.makedirs(target_dir, exist_ok=True) 
+        source = "static/my-img/no-img.png"
+        destination = os.path.join(target_dir, "no-img.png")
+        
+        shutil.copy2(source, destination)
+            
+        img_path.append(destination)
+        
+            
     else:
         await upload_img(files,None,img_path)
 
@@ -122,6 +129,7 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     
     if preview == None:
         preview = ""
+    
     new_model = model(title=title, description=html_text,image_url=img_path,preview=preview,markdown=markdown_text)
     with Session(engine) as session:
         
@@ -231,12 +239,11 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
 async def upload_img(files,choosen_model,img_path):
     
     for file in files:
-        if file.filename == "no-img.png":
-            continue
-        
+       
         DIR = "static/img/"
         os.makedirs(DIR,exist_ok=True)
         location_file = os.path.join(DIR,file.filename)
+        
         
         
        
@@ -245,7 +252,8 @@ async def upload_img(files,choosen_model,img_path):
         
         if type(img_path)  == list:
             img_path.append(location_file)
-           
+            
+        
 
         with open(location_file,"wb") as f:
             content = await file.read()
