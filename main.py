@@ -55,10 +55,16 @@ app.include_router(auth_router)
 
 
 PERSISTENT_DIR = "/mnt/data"
+
+
 MEDIA_DIR = os.path.join(PERSISTENT_DIR, "media")
 PHOTOS_DIR = os.path.join(MEDIA_DIR, "photos")
 
-os.makedirs(PHOTOS_DIR, exist_ok=True)
+if os.path.ismount(PERSISTENT_DIR):
+    os.makedirs(PHOTOS_DIR, exist_ok=True)
+else:
+    print(f"{PERSISTENT_DIR} není mount point persistentního disku")
+
 
 app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
 app.mount("/static",StaticFiles(directory="static"), name="static")
