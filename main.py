@@ -54,19 +54,15 @@ app = FastAPI()
 app.include_router(auth_router)
 
 
-PERSISTENT_DIR = "/mnt/data"
+PERSISTENT_DIR = "/media/photos"
 
 
-MEDIA_DIR = os.path.join(PERSISTENT_DIR, "media")
-PHOTOS_DIR = os.path.join(MEDIA_DIR, "photos")
-
-if os.path.ismount(PERSISTENT_DIR):
-    os.makedirs(PHOTOS_DIR, exist_ok=True)
-else:
-    print(f"{PERSISTENT_DIR} není mount point persistentního disku")
-
+MEDIA_DIR = PERSISTENT_DIR  
+os.makedirs(MEDIA_DIR, exist_ok=True)
 
 app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+
+
 app.mount("/static",StaticFiles(directory="static"), name="static")
 
 
@@ -121,14 +117,14 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
         return JSONResponse({"redirect": ADMIN_PAGE_URL})
     
     if files == None:
-        fallback_img = "media/photos/no-img.png"
+        fallback_img = "/media/photos/no-img.png"
         
         if os.path.exists(fallback_img):
             img_path.append(fallback_img)
            
         else:
 
-            target_dir = "media/photos/"
+            target_dir = "/media/photos/"
             os.makedirs(target_dir, exist_ok=True) 
             source = "static/my-img/no-img.png"
             destination = os.path.join(target_dir, "no-img.png")
@@ -174,7 +170,7 @@ def delete_project(request:Request,id : int, model_type = str,admin = Depends(ge
         choosen_model = session.get(model,id)
         if choosen_model:
             for img in choosen_model.image_url:
-                if img == "media/photos/no-img.png":
+                if img == "/media/photos/no-img.png":
                     continue
                 else:
                     try:
@@ -214,7 +210,7 @@ def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get
 @app.post(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
 async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str] = Form(None),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
-    fallback_img = "media/photos/no-img.png"
+    fallback_img = "/media/photos/no-img.png"
     model = config["model"]
     markdown_text = description
     with Session(engine) as session:
@@ -257,7 +253,7 @@ async def upload_img(files,choosen_model,img_path):
     
     for file in files:
        
-        DIR = "media/photos/"
+        DIR = "/media/photos/"
         os.makedirs(DIR,exist_ok=True)
         location_file = os.path.join(DIR,file.filename)
         
