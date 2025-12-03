@@ -60,7 +60,7 @@ PERSISTENT_DIR = "/media/photos"
 MEDIA_DIR = PERSISTENT_DIR  
 os.makedirs(MEDIA_DIR, exist_ok=True)
 
-app.mount("/media", StaticFiles(directory=MEDIA_DIR), name="media")
+app.mount("/media", StaticFiles(directory="/media"), name="media")
 
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
