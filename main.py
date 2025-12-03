@@ -250,11 +250,11 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
 
 
 async def upload_img(files,choosen_model,img_path):
-    
+    os.makedirs(DIR,exist_ok=True)
     for file in files:
        
         DIR = "/media/photos/"
-        os.makedirs(DIR,exist_ok=True)
+    
         location_file = os.path.join(DIR,file.filename)
         
         
