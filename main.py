@@ -53,10 +53,14 @@ app = FastAPI()
 
 app.include_router(auth_router)
 
-RENDER_DICS = "media/photos"
+base_dir = os.path.abspath(os.path.dirname(__file__))
+
+
+RENDER_DICS = os.path.join(base_dir,"media","photos")
+
 os.makedirs(RENDER_DICS,exist_ok=True)
 
-app.mount("/media",StaticFiles(directory="media"), name="media")
+app.mount("/media",StaticFiles(directory=os.path.join(base_dir,"media")), name="media")
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
 
