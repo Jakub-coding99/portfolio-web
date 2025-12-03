@@ -107,8 +107,9 @@ async def add_project(request : Request,title:str = Form(...),description:str = 
     if empty_data == True and files == None:
         return JSONResponse({"redirect": ADMIN_PAGE_URL})
     if files == None:
-        fallback_img = "static/img/no-img.png"
+        fallback_img = "static/my-img/no-img.png"
         img_path.append(fallback_img)
+        print(img_path)
         
     
     else:
@@ -148,7 +149,7 @@ def delete_project(request:Request,id : int, model_type = str,admin = Depends(ge
         choosen_model = session.get(model,id)
         if choosen_model:
             for img in choosen_model.image_url:
-                if img == "static/img/no-img.png":
+                if img == "static/my-img/no-img.png":
                     continue
                 else:
                     try:
@@ -188,7 +189,7 @@ def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get
 @app.post(ADMIN_EDIT_PROJECT,response_class = HTMLResponse)
 async def post_edit_content(request:Request,id:int,title: str = Form(...),description:str = Form(...),preview:Optional[str] = Form(None),files: List[UploadFile] = File(None),model_type = str,admin = Depends(get_current_user_from_cookies)):
     config = MODEL.get(model_type)
-    fallback_img = "static/img/no-img.png"
+    fallback_img = "static/my-img/no-img.png"
     model = config["model"]
     markdown_text = description
     with Session(engine) as session:

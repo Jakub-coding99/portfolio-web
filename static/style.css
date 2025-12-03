@@ -1955,8 +1955,11 @@ h2 {
     width: 100%;
 }
 
+
+
 .modal-img {
-    width: 100vw;
+    width: 80vw;
+    height: 80vh;
 }
 
 .btns-modal a {

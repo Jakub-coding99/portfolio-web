@@ -10,7 +10,7 @@ html {
 
 
 .login-section {
-    background-image: url(img/night.jpg);
+    background-image: url(my-img/night.jpg);
     width: 100%;
     height: 100vh;
     display: flex;
