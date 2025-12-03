@@ -231,9 +231,14 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
 async def upload_img(files,choosen_model,img_path):
     
     for file in files:
+        if file.filename == "no-img.png":
+            continue
+        
         DIR = "static/img/"
         os.makedirs(DIR,exist_ok=True)
         location_file = os.path.join(DIR,file.filename)
+        
+        
        
         if choosen_model:
             choosen_model.image_url.append(location_file)
