@@ -199,7 +199,7 @@ def get_edit_content(request:Request,id:int,model_type = str,admin = Depends(get
         images = choosen_model.image_url
         for i in images:
             x = i.split("/")
-            img = {"name":x[2],"path":i}
+            img = {"name":x[3],"path":i}
             current_img.append(img)
         choosen_model.image_url = current_img
         
@@ -250,10 +250,11 @@ async def post_edit_content(request:Request,id:int,title: str = Form(...),descri
 
 
 async def upload_img(files,choosen_model,img_path):
+    DIR = "/media/photos"
     os.makedirs(DIR,exist_ok=True)
     for file in files:
        
-        DIR = "/media/photos"
+        
     
         location_file = os.path.join(DIR,file.filename)
         
@@ -289,7 +290,7 @@ def all_project():
         for p in all_projects:
             
             if len(p.image_url) > 0:
-                preview_photo = p.image_url.copy()[0].split("/")[2]
+                preview_photo = p.image_url.copy()[0].split("/")[3]
               
             else:
                 preview_photo = ""
@@ -312,7 +313,7 @@ def blog_posts():
         for p in all_posts:
 
             if len(p.image_url) > 0:
-                preview_photo = p.image_url.copy()[0].split("/")[2]
+                preview_photo = p.image_url.copy()[0].split("/")[3]
             else:
                 continue
 
@@ -342,7 +343,7 @@ def get_project(request : Request ,id : int):
         
         if p["id"] == id:
             project = p
-            project_photo = [photo.split("/")[2]  for photo in project["img_url"]]
+            project_photo = [photo.split("/")[3]  for photo in project["img_url"]]
             project["img_url"] = project_photo
             break
 
