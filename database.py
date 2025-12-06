@@ -43,7 +43,8 @@ engine = create_engine(DATABASE_URL,
                         max_overflow=10,
                         pool_pre_ping=True,
                         pool_size=5,
-                        pool_recycle=1800)
+                        pool_recycle=1800,
+                        connect_args={"sslmode":"require"})
 
 def create_db_and_tables():
     SQLModel.metadata.create_all(engine)
