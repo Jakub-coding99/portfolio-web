@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="err-500-container">
+    <div class="err-content">
+        <div class="err-img-wrapper">
+             <img src="{{url_for('static', path = 'my-img/err.png')}}" alt="">
+
+        </div>
+        <h1>ERROR 500</h1>
+        <p><span class="err-span">Oops!</span> Databáze si dala malou pauzu. Zkuste stránku načíst znovu, nebo to zkuste za chvíli.</p>
+        
+        <div class="refresh-btn-wrapper">
+            <a class="refresh-btn" onclick=location.reload()>Obnovit stránku</a>
+
+        </div>
+        
+
+
+    </div>
+
+    
+
+
+
+</div>
+
+
+
+
+
+{% endblock %}
+{% block js %}<script src="{{url_for('static', path = 'main.js')}}"></script>{% endblock %}

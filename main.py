@@ -13,6 +13,8 @@ from core.templates import templates
 from core.security import get_current_user_from_cookies
 from urllib.parse import unquote
 import shutil
+from starlette.exceptions import HTTPException as StarletteHTTPException
+
 
 #TEST IF DISK WORKS again
 
@@ -94,19 +96,21 @@ def set_admin():
             new_admin = Admin(user_name=os.getenv("user_name"), password=hashed_pass)
             session.add(new_admin)
             session.commit()
-            
-
-           
+             
 
 set_admin()
 
 
 @app.exception_handler(HTTPException)
 async def custom_exception(request:Request, exc:HTTPException):
+   
     if exc.status_code == 401:
         return RedirectResponse(f"{PREFIX}{LOGIN_URL}", 302)
     raise exc
 
+@app.exception_handler(Exception)
+async def catch_err_500(request:Request,exc:Exception):
+    return templates.TemplateResponse("500_error.html", {"request": request}, status_code=500)
 
 @app.get("/add-new",response_class = HTMLResponse)
 def add_content(request : Request,admin=Depends(get_current_user_from_cookies),model_type= str):
@@ -341,6 +345,7 @@ def blog_posts():
 @app.get("/", response_class=HTMLResponse)
 async def home(request : Request):
     projects = all_project()
+    
     
     return templates.TemplateResponse("index.html",{"request":request, "projects" : projects})
 

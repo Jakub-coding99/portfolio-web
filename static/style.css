@@ -1673,6 +1673,82 @@ footer  ul a {
     
 }
 
+.err-500-container {
+    height: 100vh;
+    width: 100%;
+    display: flex;
+    
+    justify-content: center;
+    color: black;
+    background-color: #f7e8cd;
+    
+    
+}
+.err-content {
+    display: flex;
+    flex-direction: column;
+    
+}
+
+.err-content h1 {
+    margin: 5px 0 ;
+    letter-spacing: 6px;
+    color: rgb(0, 0, 0);
+     font-family: "Rubik Doodle Shadow", system-ui;
+      font-weight: bold;
+  font-style: normal;
+}
+.err-span {
+    font-weight: bold;
+    color: red;
+    text-transform: uppercase;
+    
+    
+    
+}
+.err-img-wrapper {
+    
+    width: 70%;
+    margin: 15px auto;
+}
+
+.err-content img {
+    width: 100%;
+    
+
+}
+
+.err-content p {
+    margin: 40px auto;
+    font-weight: 500;
+    letter-spacing: 1px;
+
+    
+}
+.refresh-btn-wrapper {
+    display: flex;
+    justify-content: center;
+   
+    
+}
+
+
+.refresh-btn {
+    padding: 15px 20px;
+    background-color: rgb(65, 59, 59);
+    cursor:pointer;
+    color: rgb(223, 217, 217);
+    font-weight: bold;
+    border-radius: 10px;
+    letter-spacing: 1px;
+   
+   
+}
+
+.refresh-btn:hover {
+    background-color: #535355;
+}
+
 
 
 @media (max-width: 800px) {
@@ -2265,6 +2341,18 @@ footer {
     padding: 10px 0 ;
 }
 
+.err-content {
+    width: 80vw;
+}
+
+
+.err-img-wrapper {
+    width: 100%;
+}
+
+.refresh-btn {
+    padding: 12px 18px;
+}
 
 }
 
@@ -2450,6 +2538,11 @@ footer {
     height: 30vh;
 }
 
+ .err-content {
+        width: 90vw;
+    }
+
+
 }
 
 
@@ -2469,6 +2562,11 @@ footer {
         width: 30vw;
     }
 
+
+    .err-content {
+        width: 90vw;
+    }
+
 }
 
 @media (min-width:1164px) and (max-width:1446px) {
@@ -2479,6 +2577,13 @@ footer {
         width: 25vw;
     }
 
+     .err-content {
+        width: 80vw;
+    }
+
+    .err-content p {
+        margin: auto 15px;
+    }
 
 }
 
