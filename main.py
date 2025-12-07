@@ -1,4 +1,4 @@
-from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException
+from fastapi import FastAPI,Request,Depends ,File, Form, UploadFile, HTTPException,status
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import HTMLResponse,JSONResponse
 from database import Projects,Blog,create_db_and_tables,engine,Session,select,Admin
@@ -27,6 +27,7 @@ LOGIN_URL = os.getenv("LOGIN_URL")
 PREFIX = os.getenv("PREFIX")
 DELETE_CONTENT_URL = os.getenv("DELETE_CONTENT_URL")
 DELETE_IMG = os.getenv("DELETE_IMG")
+CRON_URL = os.getenv("CRON_URL")
 
 
 MODEL = {
@@ -51,11 +52,10 @@ MODEL = {
 
 app = FastAPI()
 
+
 app.include_router(auth_router)
 
-
 PERSISTENT_DIR = "/media/photos"
-
 
 MEDIA_DIR = PERSISTENT_DIR  
 os.makedirs(MEDIA_DIR, exist_ok=True)
@@ -64,6 +64,18 @@ app.mount("/media", StaticFiles(directory="/media"), name="media")
 
 
 app.mount("/static",StaticFiles(directory="static"), name="static")
+
+
+@app.get(CRON_URL, status_code=status.HTTP_204_NO_CONTENT)
+async def dabase_wakeup():
+    with Session(engine) as session:
+        
+        project = session.scalar(select(Projects).where(Projects.id == 1))
+        if project != None:
+            print(project.id)
+        else:
+            print("No database with id of 1 exists")
+   
 
 
 create_db_and_tables()
@@ -327,7 +339,7 @@ def blog_posts():
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(request : Request):
+async def home(request : Request):
     projects = all_project()
     
     return templates.TemplateResponse("index.html",{"request":request, "projects" : projects})
