@@ -72,9 +72,9 @@ async def dabase_wakeup():
         
         project = session.scalar(select(Projects).where(Projects.id == 1))
         if project != None:
-            print(project.id)
+            return JSONResponse(project.id)
         else:
-            print("No database with id of 1 exists")
+            return JSONResponse("No database with id of 1 exists")
    
 
 
